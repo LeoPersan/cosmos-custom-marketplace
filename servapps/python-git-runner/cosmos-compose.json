@@ -1,0 +1,43 @@
+{
+  "cosmos-compose": "1.0",
+  "min_cosmos_version": "0.14.0",
+  "services": {
+    "app": {
+      "image": "python:3.13-slim",
+      "container_name": "{NAME}",
+      "restart": "unless-stopped",
+      "working_dir": "/app",
+      "environment": {
+        "PYTHONUNBUFFERED": "1",
+        "GIT_REPOSITORY_URL": "{GIT_REPOSITORY_URL:-}",
+        "GIT_BRANCH": "{GIT_BRANCH:-main}",
+        "GITHUB_TOKEN": "{GITHUB_TOKEN:-}",
+        "INSTALL_CMD": "{INSTALL_CMD:-/app/.venv/bin/pip install --no-cache-dir -r requirements.txt}",
+        "BUILD_CMD": "{BUILD_CMD:-}",
+        "START_CMD": "{START_CMD:-/app/.venv/bin/python main.py}",
+        "APP_PORT": "{APP_PORT:-8000}",
+        "PORT": "{APP_PORT:-8000}"
+      },
+      "volumes": [
+        "{VOLUME_ROOT}/app:/app"
+      ],
+      "command": [
+        "sh",
+        "-c",
+        "apt-get update >/dev/null 2>&1 && apt-get install -y --no-install-recommends git curl build-essential >/dev/null 2>&1 || true; cd /app; if [ ! -d /app/.venv ]; then python3 -m venv /app/.venv; /app/.venv/bin/pip install --upgrade pip >/dev/null 2>&1; fi; if [ -n \"$GIT_REPOSITORY_URL\" ]; then AUTH_REPO_URL=\"$GIT_REPOSITORY_URL\"; if [ -n \"$GITHUB_TOKEN\" ]; then AUTH_REPO_URL=$(echo \"$GIT_REPOSITORY_URL\" | sed -E \"s#https://#https://${GITHUB_TOKEN}@#\"); fi; if [ ! -d .git ]; then echo '[Runner] Clonando repositório Python...'; git clone --branch \"$GIT_BRANCH\" \"$AUTH_REPO_URL\" . ; else echo '[Runner] Atualizando repositório Python...'; git remote set-url origin \"$AUTH_REPO_URL\"; git fetch origin \"$GIT_BRANCH\"; git checkout \"$GIT_BRANCH\"; git pull origin \"$GIT_BRANCH\"; fi; else if [ ! -f main.py ] && [ ! -f app.py ]; then echo '[Runner] Criando aplicação Python demo...'; cat << 'EOF' > main.py\nimport http.server\nimport socketserver\nimport json\nimport os\n\nPORT = int(os.environ.get('APP_PORT', 8000))\n\nclass Handler(http.server.SimpleHTTPRequestHandler):\n    def do_GET(self):\n        self.send_response(200)\n        self.send_header('Content-type', 'application/json')\n        self.end_headers()\n        response = {'status': 'online', 'runtime': 'Python 3.13', 'message': 'ServApp Python ativo no Cosmos-Server'}\n        self.wfile.write(json.dumps(response).encode('utf-8'))\n\nwith socketserver.TCPServer(('', PORT), Handler) as httpd:\n    print(f'Servidor Python ouvindo na porta {PORT}')\n    httpd.serve_forever()\nEOF\nfi; fi; if [ -f requirements.txt ] && [ -n \"$INSTALL_CMD\" ]; then echo \"[Runner] Executando: $INSTALL_CMD\"; eval \"$INSTALL_CMD\"; fi; if [ -n \"$BUILD_CMD\" ]; then echo \"[Runner] Executando: $BUILD_CMD\"; eval \"$BUILD_CMD\"; fi; echo \"[Runner] Iniciando serviço: $START_CMD\"; exec /bin/sh -c \"$START_CMD\""
+      ],
+      "routes": [
+        {
+          "name": "{NAME}",
+          "description": "Rota principal HTTP do ServApp Python",
+          "useHost": true,
+          "target": "http://{NAME}:{APP_PORT:-8000}",
+          "mode": "PROXY",
+          "smartShield": {
+            "enabled": true
+          }
+        }
+      ]
+    }
+  }
+}

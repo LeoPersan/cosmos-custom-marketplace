@@ -1,0 +1,44 @@
+{
+  "cosmos-compose": "1.0",
+  "min_cosmos_version": "0.14.0",
+  "services": {
+    "app": {
+      "image": "rust:alpine",
+      "container_name": "{NAME}",
+      "restart": "unless-stopped",
+      "working_dir": "/app",
+      "environment": {
+        "CARGO_HOME": "/cargo",
+        "GIT_REPOSITORY_URL": "{GIT_REPOSITORY_URL:-}",
+        "GIT_BRANCH": "{GIT_BRANCH:-main}",
+        "GITHUB_TOKEN": "{GITHUB_TOKEN:-}",
+        "INSTALL_CMD": "{INSTALL_CMD:-cargo fetch}",
+        "BUILD_CMD": "{BUILD_CMD:-cargo build --release}",
+        "START_CMD": "{START_CMD:-}",
+        "APP_PORT": "{APP_PORT:-8080}",
+        "PORT": "{APP_PORT:-8080}"
+      },
+      "volumes": [
+        "{VOLUME_ROOT}/app:/app",
+        "{VOLUME_ROOT}/cargo:/cargo"
+      ],
+      "command": [
+        "sh",
+        "-c",
+        "apk add --no-cache git bash curl musl-dev >/dev/null 2>&1 || true; cd /app; if [ -n \"$GIT_REPOSITORY_URL\" ]; then AUTH_REPO_URL=\"$GIT_REPOSITORY_URL\"; if [ -n \"$GITHUB_TOKEN\" ]; then AUTH_REPO_URL=$(echo \"$GIT_REPOSITORY_URL\" | sed -E \"s#https://#https://${GITHUB_TOKEN}@#\"); fi; if [ ! -d .git ]; then echo '[Runner] Clonando repositório Rust...'; git clone --branch \"$GIT_BRANCH\" \"$AUTH_REPO_URL\" . ; else echo '[Runner] Atualizando repositório Rust...'; git remote set-url origin \"$AUTH_REPO_URL\"; git fetch origin \"$GIT_BRANCH\"; git checkout \"$GIT_BRANCH\"; git pull origin \"$GIT_BRANCH\"; fi; else if [ ! -f Cargo.toml ]; then echo '[Runner] Criando aplicação Rust demo...'; cargo new /tmp/demo --bin >/dev/null 2>&1; cp -r /tmp/demo/* /app/; cp /tmp/demo/.gitignore /app/ 2>/dev/null || true; cat << 'EOF' > /app/src/main.rs\nuse std::io::Write;\nuse std::net::TcpListener;\nuse std::env;\n\nfn main() {\n    let port = env::var(\"APP_PORT\").unwrap_or_else(|_| \"8080\".to_string());\n    let addr = format!(\"0.0.0.0:{}\", port);\n    let listener = TcpListener::bind(&addr).expect(\"Falha ao vincular porta\");\n    println!(\"Servidor Rust ouvindo em {}\", addr);\n\n    for stream in listener.incoming() {\n        if let Ok(mut stream) = stream {\n            let response_body = r#\"{\"status\":\"online\",\"runtime\":\"Rust Latest\",\"message\":\"ServApp Rust ativo no Cosmos-Server\"}\"#;\n            let response = format!(\n                \"HTTP/1.1 200 OK\\r\\nContent-Type: application/json\\r\\nContent-Length: {}\\r\\n\\r\\n{}\",\n                response_body.len(),\n                response_body\n            );\n            let _ = stream.write_all(response.as_bytes());\n        }\n    }\n}\nEOF\nfi; fi; if [ -f Cargo.toml ] && [ -n \"$INSTALL_CMD\" ]; then echo \"[Runner] Executando: $INSTALL_CMD\"; eval \"$INSTALL_CMD\"; fi; if [ -f Cargo.toml ] && [ -n \"$BUILD_CMD\" ]; then echo \"[Runner] Executando: $BUILD_CMD\"; eval \"$BUILD_CMD\"; fi; BIN_TARGET=\"\"; if [ -n \"$START_CMD\" ]; then BIN_TARGET=\"$START_CMD\"; else BIN_NAME=$(find /app/target/release -maxdepth 1 -type f -executable 2>/dev/null | grep -v 'build' | head -n 1); if [ -n \"$BIN_NAME\" ]; then BIN_TARGET=\"$BIN_NAME\"; else BIN_TARGET=\"cargo run --release\"; fi; fi; echo \"[Runner] Iniciando serviço Rust: $BIN_TARGET\"; exec /bin/sh -c \"$BIN_TARGET\""
+      ],
+      "routes": [
+        {
+          "name": "{NAME}",
+          "description": "Rota principal HTTP do ServApp Rust",
+          "useHost": true,
+          "target": "http://{NAME}:{APP_PORT:-8080}",
+          "mode": "PROXY",
+          "smartShield": {
+            "enabled": true
+          }
+        }
+      ]
+    }
+  }
+}

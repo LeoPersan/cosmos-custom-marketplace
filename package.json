@@ -4,6 +4,7 @@
   "description": "Custom Private Market Source for Cosmos-Server (Cosmos Cloud)",
   "type": "module",
   "scripts": {
+    "build": "node build.js",
     "test": "node --test test/validate-market.test.mjs"
   },
   "keywords": [

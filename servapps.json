@@ -1,0 +1,518 @@
+[
+  {
+    "name": "Golang 1.24 Git Runner",
+    "description": "Compilação e execução automatizada de microserviços e APIs em Golang 1.24 com cache de módulos e proxy Cosmos.",
+    "long_description": "O **Golang 1.24 Git Runner** realiza o download automático de dependências (`go mod download`), a compilação do binário da aplicação (`go build`) e a execução do serviço com alta performance e baixo consumo de recursos, integrado com o Smart Shield do Cosmos-Server.",
+    "author": "Private Market Admin",
+    "category": "Development & Runtimes",
+    "tags": [
+      "golang",
+      "go",
+      "go124",
+      "microservices",
+      "api",
+      "backend",
+      "git",
+      "runner"
+    ],
+    "params": [
+      {
+        "name": "GIT_REPOSITORY_URL",
+        "label": "URL do Repositório Git",
+        "type": "text",
+        "default": "",
+        "placeholder": "https://github.com/usuario/meu-projeto-go.git",
+        "description": "URL HTTPS do repositório Git para clonar e rodar. Deixe em branco para inicializar com app demo."
+      },
+      {
+        "name": "GIT_BRANCH",
+        "label": "Branch do Repositório",
+        "type": "text",
+        "default": "main",
+        "placeholder": "main",
+        "description": "Branch que será clonada e atualizada na inicialização."
+      },
+      {
+        "name": "GITHUB_TOKEN",
+        "label": "GitHub Personal Access Token (PAT)",
+        "type": "password",
+        "default": "",
+        "placeholder": "ghp_...",
+        "description": "Token de acesso pessoal para clonar repositórios privados no GitHub/GitLab."
+      },
+      {
+        "name": "INSTALL_CMD",
+        "label": "Comando de Módulos",
+        "type": "text",
+        "default": "go mod download",
+        "placeholder": "go mod download",
+        "description": "Comando executado para baixar e cachear as dependências Go."
+      },
+      {
+        "name": "BUILD_CMD",
+        "label": "Comando de Compilação",
+        "type": "text",
+        "default": "go build -o /app/bin/server .",
+        "placeholder": "go build -o /app/bin/server .",
+        "description": "Comando de build para gerar o binário de produção."
+      },
+      {
+        "name": "START_CMD",
+        "label": "Comando de Execução",
+        "type": "text",
+        "default": "/app/bin/server",
+        "placeholder": "/app/bin/server",
+        "description": "Caminho do binário compilado para execução."
+      },
+      {
+        "name": "APP_PORT",
+        "label": "Porta HTTP da Aplicação",
+        "type": "number",
+        "default": 8080,
+        "placeholder": "8080",
+        "description": "Porta interna onde o servidor Go responderá às requisições HTTP."
+      }
+    ],
+    "id": "golang-git-runner",
+    "longDescription": "O **Golang 1.24 Git Runner** realiza o download automático de dependências (`go mod download`), a compilação do binário da aplicação (`go build`) e a execução do serviço com alta performance e baixo consumo de recursos, integrado com o Smart Shield do Cosmos-Server.",
+    "repository": "https://github.com/LeoPersan/cosmos-custom-marketplace",
+    "supported_architectures": [
+      "amd64",
+      "arm64",
+      "arm"
+    ],
+    "screenshots": [],
+    "artefacts": {},
+    "icon": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/servapps/golang-git-runner/icon.png",
+    "compose": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/servapps/golang-git-runner/cosmos-compose.json"
+  },
+  {
+    "name": "Node.js 24 Git Runner",
+    "description": "Deploy contínuo e execução automatizada de aplicações Node.js 24 / TypeScript / SSR / APIs a partir de repositório Git com persistência em volume e proxy reverso Cosmos.",
+    "long_description": "O **Node.js 24 Git Runner** permite conectar qualquer repositório Git (público ou privado via GitHub Token), instalar dependências com npm/yarn/pnpm, executar builds (Next.js, Remix, Astro, NestJS, Express, Fastify) e servir a aplicação com Smart Shield e certificados SSL automáticos gerenciados pelo Cosmos-Server.",
+    "author": "Private Market Admin",
+    "category": "Development & Runtimes",
+    "tags": [
+      "nodejs",
+      "node24",
+      "typescript",
+      "javascript",
+      "pnpm",
+      "yarn",
+      "npm",
+      "git",
+      "runner",
+      "ssr",
+      "api"
+    ],
+    "params": [
+      {
+        "name": "GIT_REPOSITORY_URL",
+        "label": "URL do Repositório Git",
+        "type": "text",
+        "default": "",
+        "placeholder": "https://github.com/usuario/meu-projeto-node.git",
+        "description": "URL HTTPS do repositório Git para clonar e rodar. Deixe em branco para inicializar com app demo."
+      },
+      {
+        "name": "GIT_BRANCH",
+        "label": "Branch do Repositório",
+        "type": "text",
+        "default": "main",
+        "placeholder": "main",
+        "description": "Branch que será clonada e atualizada na inicialização."
+      },
+      {
+        "name": "GITHUB_TOKEN",
+        "label": "GitHub Personal Access Token (PAT)",
+        "type": "password",
+        "default": "",
+        "placeholder": "ghp_...",
+        "description": "Token de acesso pessoal para clonar repositórios privados no GitHub/GitLab."
+      },
+      {
+        "name": "INSTALL_CMD",
+        "label": "Comando de Instalação",
+        "type": "text",
+        "default": "npm install",
+        "placeholder": "npm install (ou pnpm install / yarn install)",
+        "description": "Comando executado para instalar dependências do projeto."
+      },
+      {
+        "name": "BUILD_CMD",
+        "label": "Comando de Build",
+        "type": "text",
+        "default": "",
+        "placeholder": "npm run build",
+        "description": "Comando opcional de compilação ou bundling executado após a instalação de dependências."
+      },
+      {
+        "name": "START_CMD",
+        "label": "Comando de Inicialização",
+        "type": "text",
+        "default": "npm start",
+        "placeholder": "npm start",
+        "description": "Comando principal que inicia o servidor da aplicação na porta configurada."
+      },
+      {
+        "name": "APP_PORT",
+        "label": "Porta HTTP da Aplicação",
+        "type": "number",
+        "default": 3000,
+        "placeholder": "3000",
+        "description": "Porta interna onde o servidor Node.js responderá às requisições HTTP."
+      }
+    ],
+    "id": "nodejs-git-runner",
+    "longDescription": "O **Node.js 24 Git Runner** permite conectar qualquer repositório Git (público ou privado via GitHub Token), instalar dependências com npm/yarn/pnpm, executar builds (Next.js, Remix, Astro, NestJS, Express, Fastify) e servir a aplicação com Smart Shield e certificados SSL automáticos gerenciados pelo Cosmos-Server.",
+    "repository": "https://github.com/LeoPersan/cosmos-custom-marketplace",
+    "supported_architectures": [
+      "amd64",
+      "arm64",
+      "arm"
+    ],
+    "screenshots": [],
+    "artefacts": {},
+    "icon": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/servapps/nodejs-git-runner/icon.png",
+    "compose": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/servapps/nodejs-git-runner/cosmos-compose.json"
+  },
+  {
+    "name": "PHP 8.4 & Laravel Runner",
+    "description": "Deploy contínuo e execução otimizada de aplicações PHP 8.4, Laravel, Symfony e WordPress com Composer, Apache e extensões essenciais.",
+    "long_description": "O **PHP 8.4 & Laravel Runner** provisiona um ambiente completo com Apache, PHP 8.4 e Composer. Permite configurar o DocumentRoot (como a pasta `public/` para frameworks modernos como Laravel ou a raiz para apps legadas), realiza instalação automática de dependências e gerencia as rotas com suporte a `.htaccess` e proxy Cosmos.",
+    "author": "Private Market Admin",
+    "category": "Development & Runtimes",
+    "tags": [
+      "php",
+      "php84",
+      "laravel",
+      "symfony",
+      "wordpress",
+      "composer",
+      "apache",
+      "git",
+      "runner"
+    ],
+    "params": [
+      {
+        "name": "GIT_REPOSITORY_URL",
+        "label": "URL do Repositório Git",
+        "type": "text",
+        "default": "",
+        "placeholder": "https://github.com/usuario/meu-laravel.git",
+        "description": "URL HTTPS do repositório Git. Deixe em branco para inicializar com endpoint demo."
+      },
+      {
+        "name": "GIT_BRANCH",
+        "label": "Branch do Repositório",
+        "type": "text",
+        "default": "main",
+        "placeholder": "main",
+        "description": "Branch que será clonada e atualizada na inicialização."
+      },
+      {
+        "name": "GITHUB_TOKEN",
+        "label": "GitHub Personal Access Token (PAT)",
+        "type": "password",
+        "default": "",
+        "placeholder": "ghp_...",
+        "description": "Token de acesso pessoal para repositórios privados."
+      },
+      {
+        "name": "DOCUMENT_ROOT",
+        "label": "Diretório Web (DocumentRoot)",
+        "type": "text",
+        "default": "public",
+        "placeholder": "public (ou . para raiz)",
+        "description": "Subdiretório que o Apache deve servir como raiz (ex: public no Laravel)."
+      },
+      {
+        "name": "INSTALL_CMD",
+        "label": "Comando de Instalação Composer",
+        "type": "text",
+        "default": "composer install --no-interaction --prefer-dist --optimize-autoloader",
+        "placeholder": "composer install",
+        "description": "Comando para download de dependências PHP via Composer."
+      },
+      {
+        "name": "BUILD_CMD",
+        "label": "Comando de Configuração / Migrations",
+        "type": "text",
+        "default": "",
+        "placeholder": "php artisan key:generate && php artisan migrate --force",
+        "description": "Comando opcional pós-instalação para comandos artisan ou inicialização."
+      }
+    ],
+    "id": "php-laravel-runner",
+    "longDescription": "O **PHP 8.4 & Laravel Runner** provisiona um ambiente completo com Apache, PHP 8.4 e Composer. Permite configurar o DocumentRoot (como a pasta `public/` para frameworks modernos como Laravel ou a raiz para apps legadas), realiza instalação automática de dependências e gerencia as rotas com suporte a `.htaccess` e proxy Cosmos.",
+    "repository": "https://github.com/LeoPersan/cosmos-custom-marketplace",
+    "supported_architectures": [
+      "amd64",
+      "arm64",
+      "arm"
+    ],
+    "screenshots": [],
+    "artefacts": {},
+    "icon": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/servapps/php-laravel-runner/icon.png",
+    "compose": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/servapps/php-laravel-runner/cosmos-compose.json"
+  },
+  {
+    "name": "Python 3.13 Git Runner",
+    "description": "Deploy automatizado de aplicações Python 3.13 (FastAPI, Flask, Django, Uvicorn, Gunicorn) com ambiente virtual isolado (.venv), clonagem Git segura e integração com proxy Cosmos.",
+    "long_description": "O **Python 3.13 Git Runner** gerencia o ciclo de vida completo de servidores e APIs Python. O runner cria automaticamente um ambiente virtual `.venv` persistente em `{VOLUME_ROOT}`, instala as dependências do `requirements.txt`, clona/atualiza o repositório Git e executa o servidor com proteção de tráfego via Smart Shield do Cosmos.",
+    "author": "Private Market Admin",
+    "category": "Development & Runtimes",
+    "tags": [
+      "python",
+      "python3",
+      "fastapi",
+      "flask",
+      "django",
+      "uvicorn",
+      "gunicorn",
+      "git",
+      "runner",
+      "api"
+    ],
+    "params": [
+      {
+        "name": "GIT_REPOSITORY_URL",
+        "label": "URL do Repositório Git",
+        "type": "text",
+        "default": "",
+        "placeholder": "https://github.com/usuario/meu-projeto-python.git",
+        "description": "URL HTTPS do repositório Git para clonar e rodar. Deixe em branco para inicializar com app demo."
+      },
+      {
+        "name": "GIT_BRANCH",
+        "label": "Branch do Repositório",
+        "type": "text",
+        "default": "main",
+        "placeholder": "main",
+        "description": "Branch que será clonada e atualizada na inicialização."
+      },
+      {
+        "name": "GITHUB_TOKEN",
+        "label": "GitHub Personal Access Token (PAT)",
+        "type": "password",
+        "default": "",
+        "placeholder": "ghp_...",
+        "description": "Token de acesso pessoal para clonar repositórios privados no GitHub/GitLab."
+      },
+      {
+        "name": "INSTALL_CMD",
+        "label": "Comando de Instalação",
+        "type": "text",
+        "default": "/app/.venv/bin/pip install --no-cache-dir -r requirements.txt",
+        "placeholder": "/app/.venv/bin/pip install -r requirements.txt",
+        "description": "Comando executado para instalar dependências via pip no virtualenv."
+      },
+      {
+        "name": "BUILD_CMD",
+        "label": "Comando de Build / Migrations",
+        "type": "text",
+        "default": "",
+        "placeholder": "/app/.venv/bin/python manage.py migrate",
+        "description": "Comando opcional de preparação ou migração de banco de dados antes do start."
+      },
+      {
+        "name": "START_CMD",
+        "label": "Comando de Inicialização",
+        "type": "text",
+        "default": "/app/.venv/bin/python main.py",
+        "placeholder": "/app/.venv/bin/uvicorn main:app --host 0.0.0.0 --port 8000",
+        "description": "Comando principal para iniciar a aplicação Python (ex: uvicorn, gunicorn, python main.py)."
+      },
+      {
+        "name": "APP_PORT",
+        "label": "Porta HTTP da Aplicação",
+        "type": "number",
+        "default": 8000,
+        "placeholder": "8000",
+        "description": "Porta interna onde a aplicação Python responderá às requisições HTTP."
+      }
+    ],
+    "id": "python-git-runner",
+    "longDescription": "O **Python 3.13 Git Runner** gerencia o ciclo de vida completo de servidores e APIs Python. O runner cria automaticamente um ambiente virtual `.venv` persistente em `{VOLUME_ROOT}`, instala as dependências do `requirements.txt`, clona/atualiza o repositório Git e executa o servidor com proteção de tráfego via Smart Shield do Cosmos.",
+    "repository": "https://github.com/LeoPersan/cosmos-custom-marketplace",
+    "supported_architectures": [
+      "amd64",
+      "arm64",
+      "arm"
+    ],
+    "screenshots": [],
+    "artefacts": {},
+    "icon": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/servapps/python-git-runner/icon.png",
+    "compose": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/servapps/python-git-runner/cosmos-compose.json"
+  },
+  {
+    "name": "Rust Git Runner",
+    "description": "Compilação otimizada (`cargo build --release`) e execução de binários web em Rust (Axum, Actix-web, Rocket) com cache de crates Cargo e proxy Cosmos.",
+    "long_description": "O **Rust Git Runner** oferece um ambiente moderno com Rust e Cargo. Mantém cache persistente dos pacotes baixados em `{VOLUME_ROOT}/cargo`, clona/atualiza o repositório Git, realiza a compilação do binário release e inicializa o servidor de alta performance integrado ao Smart Shield do Cosmos.",
+    "author": "Private Market Admin",
+    "category": "Development & Runtimes",
+    "tags": [
+      "rust",
+      "cargo",
+      "axum",
+      "actix",
+      "rocket",
+      "api",
+      "backend",
+      "git",
+      "runner"
+    ],
+    "params": [
+      {
+        "name": "GIT_REPOSITORY_URL",
+        "label": "URL do Repositório Git",
+        "type": "text",
+        "default": "",
+        "placeholder": "https://github.com/usuario/meu-projeto-rust.git",
+        "description": "URL HTTPS do repositório Git. Deixe em branco para inicializar com servidor demo."
+      },
+      {
+        "name": "GIT_BRANCH",
+        "label": "Branch do Repositório",
+        "type": "text",
+        "default": "main",
+        "placeholder": "main",
+        "description": "Branch que será clonada e atualizada na inicialização."
+      },
+      {
+        "name": "GITHUB_TOKEN",
+        "label": "GitHub Personal Access Token (PAT)",
+        "type": "password",
+        "default": "",
+        "placeholder": "ghp_...",
+        "description": "Token de acesso pessoal para repositórios privados."
+      },
+      {
+        "name": "INSTALL_CMD",
+        "label": "Comando de Download de Dependências",
+        "type": "text",
+        "default": "cargo fetch",
+        "placeholder": "cargo fetch",
+        "description": "Comando executado para baixar e cachear crates Cargo."
+      },
+      {
+        "name": "BUILD_CMD",
+        "label": "Comando de Compilação",
+        "type": "text",
+        "default": "cargo build --release",
+        "placeholder": "cargo build --release",
+        "description": "Comando de build executado para gerar os binários de produção."
+      },
+      {
+        "name": "START_CMD",
+        "label": "Comando de Inicialização",
+        "type": "text",
+        "default": "",
+        "placeholder": "/app/target/release/meu-binario (ou deixe em branco para detecção automática)",
+        "description": "Caminho do binário para execução direta ou comando customizado."
+      },
+      {
+        "name": "APP_PORT",
+        "label": "Porta HTTP da Aplicação",
+        "type": "number",
+        "default": 8080,
+        "placeholder": "8080",
+        "description": "Porta interna onde o servidor Rust responderá às requisições HTTP."
+      }
+    ],
+    "id": "rust-git-runner",
+    "longDescription": "O **Rust Git Runner** oferece um ambiente moderno com Rust e Cargo. Mantém cache persistente dos pacotes baixados em `{VOLUME_ROOT}/cargo`, clona/atualiza o repositório Git, realiza a compilação do binário release e inicializa o servidor de alta performance integrado ao Smart Shield do Cosmos.",
+    "repository": "https://github.com/LeoPersan/cosmos-custom-marketplace",
+    "supported_architectures": [
+      "amd64",
+      "arm64",
+      "arm"
+    ],
+    "screenshots": [],
+    "artefacts": {},
+    "icon": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/servapps/rust-git-runner/icon.png",
+    "compose": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/servapps/rust-git-runner/cosmos-compose.json"
+  },
+  {
+    "name": "Static & SPA Nginx Runner",
+    "description": "Deploy automatizado de sites estáticos e SPAs (React, Vue, Vite, Svelte, Astro, Angular) com Nginx de alta performance e roteamento SPA integrado.",
+    "long_description": "O **Static & SPA Nginx Runner** clona seu repositório de frontend, executa os passos de build (`npm run build` ou similar) e disponibiliza os assets estáticos através de um servidor Nginx Alpine otimizado com suporte nativo a `try_files` para Single Page Applications (evitando erros 404 em rotas de navegação client-side).",
+    "author": "Private Market Admin",
+    "category": "Development & Runtimes",
+    "tags": [
+      "nginx",
+      "spa",
+      "react",
+      "vue",
+      "vite",
+      "svelte",
+      "astro",
+      "static",
+      "frontend",
+      "git",
+      "runner"
+    ],
+    "params": [
+      {
+        "name": "GIT_REPOSITORY_URL",
+        "label": "URL do Repositório Git",
+        "type": "text",
+        "default": "",
+        "placeholder": "https://github.com/usuario/meu-frontend.git",
+        "description": "URL HTTPS do repositório Git. Deixe em branco para inicializar com landing page demo."
+      },
+      {
+        "name": "GIT_BRANCH",
+        "label": "Branch do Repositório",
+        "type": "text",
+        "default": "main",
+        "placeholder": "main",
+        "description": "Branch que será clonada e atualizada na inicialização."
+      },
+      {
+        "name": "GITHUB_TOKEN",
+        "label": "GitHub Personal Access Token (PAT)",
+        "type": "password",
+        "default": "",
+        "placeholder": "ghp_...",
+        "description": "Token de acesso pessoal para repositórios privados."
+      },
+      {
+        "name": "DIST_DIR",
+        "label": "Diretório de Distribuição (Build Output)",
+        "type": "text",
+        "default": "dist",
+        "placeholder": "dist (ou build, out, public)",
+        "description": "Pasta de saída gerada pelo build contendo os arquivos finais para publicação."
+      },
+      {
+        "name": "INSTALL_CMD",
+        "label": "Comando de Instalação",
+        "type": "text",
+        "default": "npm install",
+        "placeholder": "npm install (ou pnpm install / yarn install)",
+        "description": "Comando para instalar dependências do framework frontend."
+      },
+      {
+        "name": "BUILD_CMD",
+        "label": "Comando de Build",
+        "type": "text",
+        "default": "npm run build",
+        "placeholder": "npm run build",
+        "description": "Comando para compilar os assets estáticos (ex: Vite/Webpack/Astro build)."
+      }
+    ],
+    "id": "static-nginx-runner",
+    "longDescription": "O **Static & SPA Nginx Runner** clona seu repositório de frontend, executa os passos de build (`npm run build` ou similar) e disponibiliza os assets estáticos através de um servidor Nginx Alpine otimizado com suporte nativo a `try_files` para Single Page Applications (evitando erros 404 em rotas de navegação client-side).",
+    "repository": "https://github.com/LeoPersan/cosmos-custom-marketplace",
+    "supported_architectures": [
+      "amd64",
+      "arm64",
+      "arm"
+    ],
+    "screenshots": [],
+    "artefacts": {},
+    "icon": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/servapps/static-nginx-runner/icon.png",
+    "compose": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/servapps/static-nginx-runner/cosmos-compose.json"
+  }
+]
