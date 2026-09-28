@@ -56,18 +56,19 @@
         "cosmos-force-network-secured": "true",
         "cosmos-auto-update": "true",
         "cosmos-stack": "{ServiceName}",
-        "cosmos-stack-main": "{ServiceName}"
+        "cosmos-stack-main": "{ServiceName}",
+        "cosmos-persistent-env": "GIT_REPOSITORY_URL, GIT_BRANCH, GITHUB_TOKEN, INSTALL_CMD, BUILD_CMD, START_CMD, APP_PORT"
       },
       "environment": [
         "CGO_ENABLED=0",
-        "GIT_REPOSITORY_URL={GIT_REPOSITORY_URL}",
-        "GIT_BRANCH={GIT_BRANCH}",
-        "GITHUB_TOKEN={GITHUB_TOKEN}",
-        "INSTALL_CMD={INSTALL_CMD}",
-        "BUILD_CMD={BUILD_CMD}",
-        "START_CMD={START_CMD}",
-        "APP_PORT={APP_PORT}",
-        "PORT={APP_PORT}"
+        "GIT_REPOSITORY_URL={Context.GIT_REPOSITORY_URL}",
+        "GIT_BRANCH={Context.GIT_BRANCH}",
+        "GITHUB_TOKEN={Context.GITHUB_TOKEN}",
+        "INSTALL_CMD={Context.INSTALL_CMD}",
+        "BUILD_CMD={Context.BUILD_CMD}",
+        "START_CMD={Context.START_CMD}",
+        "APP_PORT={Context.APP_PORT}",
+        "PORT={Context.APP_PORT}"
       ],
       "volumes": [
         {
