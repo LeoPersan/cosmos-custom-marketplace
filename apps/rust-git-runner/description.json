@@ -1,0 +1,76 @@
+{
+  "name": "Rust Git Runner",
+  "description": "Compilação otimizada (`cargo build --release`) e execução de binários web em Rust (Axum, Actix-web, Rocket) com cache de crates Cargo e proxy Cosmos.",
+  "long_description": "O **Rust Git Runner** oferece um ambiente moderno com Rust e Cargo. Mantém cache persistente dos pacotes baixados em `{VOLUME_ROOT}/cargo`, clona/atualiza o repositório Git, realiza a compilação do binário release e inicializa o servidor de alta performance integrado ao Smart Shield do Cosmos.",
+  "author": "Private Market Admin",
+  "category": "Development & Runtimes",
+  "tags": [
+    "rust",
+    "cargo",
+    "axum",
+    "actix",
+    "rocket",
+    "api",
+    "backend",
+    "git",
+    "runner"
+  ],
+  "params": [
+    {
+      "name": "GIT_REPOSITORY_URL",
+      "label": "URL do Repositório Git",
+      "type": "text",
+      "default": "",
+      "placeholder": "https://github.com/usuario/meu-projeto-rust.git",
+      "description": "URL HTTPS do repositório Git. Deixe em branco para inicializar com servidor demo."
+    },
+    {
+      "name": "GIT_BRANCH",
+      "label": "Branch do Repositório",
+      "type": "text",
+      "default": "main",
+      "placeholder": "main",
+      "description": "Branch que será clonada e atualizada na inicialização."
+    },
+    {
+      "name": "GITHUB_TOKEN",
+      "label": "GitHub Personal Access Token (PAT)",
+      "type": "password",
+      "default": "",
+      "placeholder": "ghp_...",
+      "description": "Token de acesso pessoal para repositórios privados."
+    },
+    {
+      "name": "INSTALL_CMD",
+      "label": "Comando de Download de Dependências",
+      "type": "text",
+      "default": "cargo fetch",
+      "placeholder": "cargo fetch",
+      "description": "Comando executado para baixar e cachear crates Cargo."
+    },
+    {
+      "name": "BUILD_CMD",
+      "label": "Comando de Compilação",
+      "type": "text",
+      "default": "cargo build --release",
+      "placeholder": "cargo build --release",
+      "description": "Comando de build executado para gerar os binários de produção."
+    },
+    {
+      "name": "START_CMD",
+      "label": "Comando de Inicialização",
+      "type": "text",
+      "default": "",
+      "placeholder": "/app/target/release/meu-binario (ou deixe em branco para detecção automática)",
+      "description": "Caminho do binário para execução direta ou comando customizado."
+    },
+    {
+      "name": "APP_PORT",
+      "label": "Porta HTTP da Aplicação",
+      "type": "number",
+      "default": 8080,
+      "placeholder": "8080",
+      "description": "Porta interna onde o servidor Rust responderá às requisições HTTP."
+    }
+  ]
+}

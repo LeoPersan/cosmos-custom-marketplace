@@ -1,0 +1,44 @@
+{
+  "cosmos-compose": "1.0",
+  "min_cosmos_version": "0.14.0",
+  "services": {
+    "app": {
+      "image": "golang:1.24-alpine",
+      "container_name": "{NAME}",
+      "restart": "unless-stopped",
+      "working_dir": "/app",
+      "environment": {
+        "CGO_ENABLED": "0",
+        "GIT_REPOSITORY_URL": "{GIT_REPOSITORY_URL:-}",
+        "GIT_BRANCH": "{GIT_BRANCH:-main}",
+        "GITHUB_TOKEN": "{GITHUB_TOKEN:-}",
+        "INSTALL_CMD": "{INSTALL_CMD:-go mod download}",
+        "BUILD_CMD": "{BUILD_CMD:-go build -o /app/bin/server .}",
+        "START_CMD": "{START_CMD:-/app/bin/server}",
+        "APP_PORT": "{APP_PORT:-8080}",
+        "PORT": "{APP_PORT:-8080}"
+      },
+      "volumes": [
+        "{VOLUME_ROOT}/app:/app",
+        "{VOLUME_ROOT}/go-pkg:/go/pkg/mod"
+      ],
+      "command": [
+        "sh",
+        "-c",
+        "apk add --no-cache git bash build-base curl >/dev/null 2>&1 || true; mkdir -p /app/bin; cd /app; if [ -n \"$GIT_REPOSITORY_URL\" ]; then AUTH_REPO_URL=\"$GIT_REPOSITORY_URL\"; if [ -n \"$GITHUB_TOKEN\" ]; then AUTH_REPO_URL=$(echo \"$GIT_REPOSITORY_URL\" | sed -E \"s#https://#https://${GITHUB_TOKEN}@#\"); fi; if [ ! -d .git ]; then echo '[Runner] Clonando repositório Go...'; git clone --branch \"$GIT_BRANCH\" \"$AUTH_REPO_URL\" . ; else echo '[Runner] Atualizando repositório Go...'; git remote set-url origin \"$AUTH_REPO_URL\"; git fetch origin \"$GIT_BRANCH\"; git checkout \"$GIT_BRANCH\"; git pull origin \"$GIT_BRANCH\"; fi; else if [ ! -f main.go ] && [ ! -f go.mod ]; then echo '[Runner] Criando aplicação Go demo...'; cat << 'EOF' > main.go\npackage main\n\nimport (\n\t\"encoding/json\"\n\t\"fmt\"\n\t\"net/http\"\n\t\"os\"\n)\n\nfunc main() {\n\tport := os.Getenv(\"APP_PORT\")\n\tif port == \"\" {\n\t\tport = \"8080\"\n\t}\n\thttp.HandleFunc(\"/\", func(w http.ResponseWriter, r *http.Request) {\n\t\tw.Header().Set(\"Content-Type\", \"application/json\")\n\t\tjson.NewEncoder(w).Encode(map[string]string{\n\t\t\t\"status\":  \"online\",\n\t\t\t\"runtime\": \"Golang 1.24\",\n\t\t\t\"message\": \"ServApp Go ativo no Cosmos-Server\",\n\t\t})\n\t})\n\tfmt.Printf(\"Servidor Go ouvindo na porta %s\\n\", port)\n\thttp.ListenAndServe(\":\"+port, nil)\n}\nEOF\nfi; fi; if [ -f go.mod ] && [ -n \"$INSTALL_CMD\" ]; then echo \"[Runner] Executando: $INSTALL_CMD\"; eval \"$INSTALL_CMD\"; fi; if [ -n \"$BUILD_CMD\" ]; then echo \"[Runner] Executando: $BUILD_CMD\"; eval \"$BUILD_CMD\"; fi; echo \"[Runner] Iniciando binário: $START_CMD\"; if [ -f /app/bin/server ]; then exec /app/bin/server; elif [ -f main.go ]; then exec go run main.go; else exec /bin/sh -c \"$START_CMD\"; fi"
+      ],
+      "routes": [
+        {
+          "name": "{NAME}",
+          "description": "Rota principal HTTP do ServApp Go",
+          "useHost": true,
+          "target": "http://{NAME}:{APP_PORT:-8080}",
+          "mode": "PROXY",
+          "smartShield": {
+            "enabled": true
+          }
+        }
+      ]
+    }
+  }
+}

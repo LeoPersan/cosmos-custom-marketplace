@@ -1,0 +1,78 @@
+{
+  "name": "Node.js 24 Git Runner",
+  "description": "Deploy contínuo e execução automatizada de aplicações Node.js 24 / TypeScript / SSR / APIs a partir de repositório Git com persistência em volume e proxy reverso Cosmos.",
+  "long_description": "O **Node.js 24 Git Runner** permite conectar qualquer repositório Git (público ou privado via GitHub Token), instalar dependências com npm/yarn/pnpm, executar builds (Next.js, Remix, Astro, NestJS, Express, Fastify) e servir a aplicação com Smart Shield e certificados SSL automáticos gerenciados pelo Cosmos-Server.",
+  "author": "Private Market Admin",
+  "category": "Development & Runtimes",
+  "tags": [
+    "nodejs",
+    "node24",
+    "typescript",
+    "javascript",
+    "pnpm",
+    "yarn",
+    "npm",
+    "git",
+    "runner",
+    "ssr",
+    "api"
+  ],
+  "params": [
+    {
+      "name": "GIT_REPOSITORY_URL",
+      "label": "URL do Repositório Git",
+      "type": "text",
+      "default": "",
+      "placeholder": "https://github.com/usuario/meu-projeto-node.git",
+      "description": "URL HTTPS do repositório Git para clonar e rodar. Deixe em branco para inicializar com app demo."
+    },
+    {
+      "name": "GIT_BRANCH",
+      "label": "Branch do Repositório",
+      "type": "text",
+      "default": "main",
+      "placeholder": "main",
+      "description": "Branch que será clonada e atualizada na inicialização."
+    },
+    {
+      "name": "GITHUB_TOKEN",
+      "label": "GitHub Personal Access Token (PAT)",
+      "type": "password",
+      "default": "",
+      "placeholder": "ghp_...",
+      "description": "Token de acesso pessoal para clonar repositórios privados no GitHub/GitLab."
+    },
+    {
+      "name": "INSTALL_CMD",
+      "label": "Comando de Instalação",
+      "type": "text",
+      "default": "npm install",
+      "placeholder": "npm install (ou pnpm install / yarn install)",
+      "description": "Comando executado para instalar dependências do projeto."
+    },
+    {
+      "name": "BUILD_CMD",
+      "label": "Comando de Build",
+      "type": "text",
+      "default": "",
+      "placeholder": "npm run build",
+      "description": "Comando opcional de compilação ou bundling executado após a instalação de dependências."
+    },
+    {
+      "name": "START_CMD",
+      "label": "Comando de Inicialização",
+      "type": "text",
+      "default": "npm start",
+      "placeholder": "npm start",
+      "description": "Comando principal que inicia o servidor da aplicação na porta configurada."
+    },
+    {
+      "name": "APP_PORT",
+      "label": "Porta HTTP da Aplicação",
+      "type": "number",
+      "default": 3000,
+      "placeholder": "3000",
+      "description": "Porta interna onde o servidor Node.js responderá às requisições HTTP."
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "cosmos-compose": "1.0",
+  "min_cosmos_version": "0.14.0",
+  "services": {
+    "app": {
+      "image": "node:24-alpine",
+      "container_name": "{NAME}",
+      "restart": "unless-stopped",
+      "working_dir": "/app",
+      "environment": {
+        "NODE_ENV": "production",
+        "GIT_REPOSITORY_URL": "{GIT_REPOSITORY_URL:-}",
+        "GIT_BRANCH": "{GIT_BRANCH:-main}",
+        "GITHUB_TOKEN": "{GITHUB_TOKEN:-}",
+        "INSTALL_CMD": "{INSTALL_CMD:-npm install}",
+        "BUILD_CMD": "{BUILD_CMD:-}",
+        "START_CMD": "{START_CMD:-npm start}",
+        "APP_PORT": "{APP_PORT:-3000}",
+        "PORT": "{APP_PORT:-3000}"
+      },
+      "volumes": [
+        "{VOLUME_ROOT}/app:/app"
+      ],
+      "command": [
+        "sh",
+        "-c",
+        "apk add --no-cache git bash curl corepack >/dev/null 2>&1 || true; corepack enable >/dev/null 2>&1 || true; cd /app; if [ -n \"$GIT_REPOSITORY_URL\" ]; then AUTH_REPO_URL=\"$GIT_REPOSITORY_URL\"; if [ -n \"$GITHUB_TOKEN\" ]; then AUTH_REPO_URL=$(echo \"$GIT_REPOSITORY_URL\" | sed -E \"s#https://#https://${GITHUB_TOKEN}@#\"); fi; if [ ! -d .git ]; then echo '[Runner] Clonando repositório...'; git clone --branch \"$GIT_BRANCH\" \"$AUTH_REPO_URL\" . ; else echo '[Runner] Atualizando repositório...'; git remote set-url origin \"$AUTH_REPO_URL\"; git fetch origin \"$GIT_BRANCH\"; git checkout \"$GIT_BRANCH\"; git pull origin \"$GIT_BRANCH\"; fi; else if [ ! -f package.json ] && [ ! -f server.js ] && [ ! -f index.js ]; then echo '[Runner] Criando aplicação de exemplo...'; cat << 'EOF' > server.js\nconst http = require('http');\nconst port = process.env.PORT || 3000;\nhttp.createServer((req, res) => {\n  res.writeHead(200, { 'Content-Type': 'application/json' });\n  res.end(JSON.stringify({ status: 'online', runtime: 'Node.js 24', message: 'ServApp Node.js ativo no Cosmos-Server' }));\n}).listen(port, () => console.log(`Servidor ouvindo na porta ${port}`));\nEOF\nfi; fi; if [ -n \"$INSTALL_CMD\" ] && [ -f package.json ]; then echo \"[Runner] Executando: $INSTALL_CMD\"; eval \"$INSTALL_CMD\"; fi; if [ -n \"$BUILD_CMD\" ]; then echo \"[Runner] Executando: $BUILD_CMD\"; eval \"$BUILD_CMD\"; fi; echo \"[Runner] Iniciando serviço: $START_CMD\"; if [ -f server.js ] && [ ! -f package.json ] && [ \"$START_CMD\" = \"npm start\" ]; then exec node server.js; else exec /bin/sh -c \"$START_CMD\"; fi"
+      ],
+      "routes": [
+        {
+          "name": "{NAME}",
+          "description": "Rota principal HTTP do ServApp Node.js",
+          "useHost": true,
+          "target": "http://{NAME}:{APP_PORT:-3000}",
+          "mode": "PROXY",
+          "smartShield": {
+            "enabled": true
+          }
+        }
+      ]
+    }
+  }
+}

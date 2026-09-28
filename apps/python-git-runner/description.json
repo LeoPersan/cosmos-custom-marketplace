@@ -1,0 +1,77 @@
+{
+  "name": "Python 3.13 Git Runner",
+  "description": "Deploy automatizado de aplicações Python 3.13 (FastAPI, Flask, Django, Uvicorn, Gunicorn) com ambiente virtual isolado (.venv), clonagem Git segura e integração com proxy Cosmos.",
+  "long_description": "O **Python 3.13 Git Runner** gerencia o ciclo de vida completo de servidores e APIs Python. O runner cria automaticamente um ambiente virtual `.venv` persistente em `{VOLUME_ROOT}`, instala as dependências do `requirements.txt`, clona/atualiza o repositório Git e executa o servidor com proteção de tráfego via Smart Shield do Cosmos.",
+  "author": "Private Market Admin",
+  "category": "Development & Runtimes",
+  "tags": [
+    "python",
+    "python3",
+    "fastapi",
+    "flask",
+    "django",
+    "uvicorn",
+    "gunicorn",
+    "git",
+    "runner",
+    "api"
+  ],
+  "params": [
+    {
+      "name": "GIT_REPOSITORY_URL",
+      "label": "URL do Repositório Git",
+      "type": "text",
+      "default": "",
+      "placeholder": "https://github.com/usuario/meu-projeto-python.git",
+      "description": "URL HTTPS do repositório Git para clonar e rodar. Deixe em branco para inicializar com app demo."
+    },
+    {
+      "name": "GIT_BRANCH",
+      "label": "Branch do Repositório",
+      "type": "text",
+      "default": "main",
+      "placeholder": "main",
+      "description": "Branch que será clonada e atualizada na inicialização."
+    },
+    {
+      "name": "GITHUB_TOKEN",
+      "label": "GitHub Personal Access Token (PAT)",
+      "type": "password",
+      "default": "",
+      "placeholder": "ghp_...",
+      "description": "Token de acesso pessoal para clonar repositórios privados no GitHub/GitLab."
+    },
+    {
+      "name": "INSTALL_CMD",
+      "label": "Comando de Instalação",
+      "type": "text",
+      "default": "/app/.venv/bin/pip install --no-cache-dir -r requirements.txt",
+      "placeholder": "/app/.venv/bin/pip install -r requirements.txt",
+      "description": "Comando executado para instalar dependências via pip no virtualenv."
+    },
+    {
+      "name": "BUILD_CMD",
+      "label": "Comando de Build / Migrations",
+      "type": "text",
+      "default": "",
+      "placeholder": "/app/.venv/bin/python manage.py migrate",
+      "description": "Comando opcional de preparação ou migração de banco de dados antes do start."
+    },
+    {
+      "name": "START_CMD",
+      "label": "Comando de Inicialização",
+      "type": "text",
+      "default": "/app/.venv/bin/python main.py",
+      "placeholder": "/app/.venv/bin/uvicorn main:app --host 0.0.0.0 --port 8000",
+      "description": "Comando principal para iniciar a aplicação Python (ex: uvicorn, gunicorn, python main.py)."
+    },
+    {
+      "name": "APP_PORT",
+      "label": "Porta HTTP da Aplicação",
+      "type": "number",
+      "default": 8000,
+      "placeholder": "8000",
+      "description": "Porta interna onde a aplicação Python responderá às requisições HTTP."
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "name": "PHP 8.4 & Laravel Runner",
+  "description": "Deploy contínuo e execução otimizada de aplicações PHP 8.4, Laravel, Symfony e WordPress com Composer, Apache e extensões essenciais.",
+  "long_description": "O **PHP 8.4 & Laravel Runner** provisiona um ambiente completo com Apache, PHP 8.4 e Composer. Permite configurar o DocumentRoot (como a pasta `public/` para frameworks modernos como Laravel ou a raiz para apps legadas), realiza instalação automática de dependências e gerencia as rotas com suporte a `.htaccess` e proxy Cosmos.",
+  "author": "Private Market Admin",
+  "category": "Development & Runtimes",
+  "tags": [
+    "php",
+    "php84",
+    "laravel",
+    "symfony",
+    "wordpress",
+    "composer",
+    "apache",
+    "git",
+    "runner"
+  ],
+  "params": [
+    {
+      "name": "GIT_REPOSITORY_URL",
+      "label": "URL do Repositório Git",
+      "type": "text",
+      "default": "",
+      "placeholder": "https://github.com/usuario/meu-laravel.git",
+      "description": "URL HTTPS do repositório Git. Deixe em branco para inicializar com endpoint demo."
+    },
+    {
+      "name": "GIT_BRANCH",
+      "label": "Branch do Repositório",
+      "type": "text",
+      "default": "main",
+      "placeholder": "main",
+      "description": "Branch que será clonada e atualizada na inicialização."
+    },
+    {
+      "name": "GITHUB_TOKEN",
+      "label": "GitHub Personal Access Token (PAT)",
+      "type": "password",
+      "default": "",
+      "placeholder": "ghp_...",
+      "description": "Token de acesso pessoal para repositórios privados."
+    },
+    {
+      "name": "DOCUMENT_ROOT",
+      "label": "Diretório Web (DocumentRoot)",
+      "type": "text",
+      "default": "public",
+      "placeholder": "public (ou . para raiz)",
+      "description": "Subdiretório que o Apache deve servir como raiz (ex: public no Laravel)."
+    },
+    {
+      "name": "INSTALL_CMD",
+      "label": "Comando de Instalação Composer",
+      "type": "text",
+      "default": "composer install --no-interaction --prefer-dist --optimize-autoloader",
+      "placeholder": "composer install",
+      "description": "Comando para download de dependências PHP via Composer."
+    },
+    {
+      "name": "BUILD_CMD",
+      "label": "Comando de Configuração / Migrations",
+      "type": "text",
+      "default": "",
+      "placeholder": "php artisan key:generate && php artisan migrate --force",
+      "description": "Comando opcional pós-instalação para comandos artisan ou inicialização."
+    }
+  ]
+}

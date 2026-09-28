@@ -1,0 +1,70 @@
+{
+  "name": "Static & SPA Nginx Runner",
+  "description": "Deploy automatizado de sites estáticos e SPAs (React, Vue, Vite, Svelte, Astro, Angular) com Nginx de alta performance e roteamento SPA integrado.",
+  "long_description": "O **Static & SPA Nginx Runner** clona seu repositório de frontend, executa os passos de build (`npm run build` ou similar) e disponibiliza os assets estáticos através de um servidor Nginx Alpine otimizado com suporte nativo a `try_files` para Single Page Applications (evitando erros 404 em rotas de navegação client-side).",
+  "author": "Private Market Admin",
+  "category": "Development & Runtimes",
+  "tags": [
+    "nginx",
+    "spa",
+    "react",
+    "vue",
+    "vite",
+    "svelte",
+    "astro",
+    "static",
+    "frontend",
+    "git",
+    "runner"
+  ],
+  "params": [
+    {
+      "name": "GIT_REPOSITORY_URL",
+      "label": "URL do Repositório Git",
+      "type": "text",
+      "default": "",
+      "placeholder": "https://github.com/usuario/meu-frontend.git",
+      "description": "URL HTTPS do repositório Git. Deixe em branco para inicializar com landing page demo."
+    },
+    {
+      "name": "GIT_BRANCH",
+      "label": "Branch do Repositório",
+      "type": "text",
+      "default": "main",
+      "placeholder": "main",
+      "description": "Branch que será clonada e atualizada na inicialização."
+    },
+    {
+      "name": "GITHUB_TOKEN",
+      "label": "GitHub Personal Access Token (PAT)",
+      "type": "password",
+      "default": "",
+      "placeholder": "ghp_...",
+      "description": "Token de acesso pessoal para repositórios privados."
+    },
+    {
+      "name": "DIST_DIR",
+      "label": "Diretório de Distribuição (Build Output)",
+      "type": "text",
+      "default": "dist",
+      "placeholder": "dist (ou build, out, public)",
+      "description": "Pasta de saída gerada pelo build contendo os arquivos finais para publicação."
+    },
+    {
+      "name": "INSTALL_CMD",
+      "label": "Comando de Instalação",
+      "type": "text",
+      "default": "npm install",
+      "placeholder": "npm install (ou pnpm install / yarn install)",
+      "description": "Comando para instalar dependências do framework frontend."
+    },
+    {
+      "name": "BUILD_CMD",
+      "label": "Comando de Build",
+      "type": "text",
+      "default": "npm run build",
+      "placeholder": "npm run build",
+      "description": "Comando para compilar os assets estáticos (ex: Vite/Webpack/Astro build)."
+    }
+  ]
+}

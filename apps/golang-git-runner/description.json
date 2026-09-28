@@ -1,0 +1,75 @@
+{
+  "name": "Golang 1.24 Git Runner",
+  "description": "Compilação e execução automatizada de microserviços e APIs em Golang 1.24 com cache de módulos e proxy Cosmos.",
+  "long_description": "O **Golang 1.24 Git Runner** realiza o download automático de dependências (`go mod download`), a compilação do binário da aplicação (`go build`) e a execução do serviço com alta performance e baixo consumo de recursos, integrado com o Smart Shield do Cosmos-Server.",
+  "author": "Private Market Admin",
+  "category": "Development & Runtimes",
+  "tags": [
+    "golang",
+    "go",
+    "go124",
+    "microservices",
+    "api",
+    "backend",
+    "git",
+    "runner"
+  ],
+  "params": [
+    {
+      "name": "GIT_REPOSITORY_URL",
+      "label": "URL do Repositório Git",
+      "type": "text",
+      "default": "",
+      "placeholder": "https://github.com/usuario/meu-projeto-go.git",
+      "description": "URL HTTPS do repositório Git para clonar e rodar. Deixe em branco para inicializar com app demo."
+    },
+    {
+      "name": "GIT_BRANCH",
+      "label": "Branch do Repositório",
+      "type": "text",
+      "default": "main",
+      "placeholder": "main",
+      "description": "Branch que será clonada e atualizada na inicialização."
+    },
+    {
+      "name": "GITHUB_TOKEN",
+      "label": "GitHub Personal Access Token (PAT)",
+      "type": "password",
+      "default": "",
+      "placeholder": "ghp_...",
+      "description": "Token de acesso pessoal para clonar repositórios privados no GitHub/GitLab."
+    },
+    {
+      "name": "INSTALL_CMD",
+      "label": "Comando de Módulos",
+      "type": "text",
+      "default": "go mod download",
+      "placeholder": "go mod download",
+      "description": "Comando executado para baixar e cachear as dependências Go."
+    },
+    {
+      "name": "BUILD_CMD",
+      "label": "Comando de Compilação",
+      "type": "text",
+      "default": "go build -o /app/bin/server .",
+      "placeholder": "go build -o /app/bin/server .",
+      "description": "Comando de build para gerar o binário de produção."
+    },
+    {
+      "name": "START_CMD",
+      "label": "Comando de Execução",
+      "type": "text",
+      "default": "/app/bin/server",
+      "placeholder": "/app/bin/server",
+      "description": "Caminho do binário compilado para execução."
+    },
+    {
+      "name": "APP_PORT",
+      "label": "Porta HTTP da Aplicação",
+      "type": "number",
+      "default": 8080,
+      "placeholder": "8080",
+      "description": "Porta interna onde o servidor Go responderá às requisições HTTP."
+    }
+  ]
+}

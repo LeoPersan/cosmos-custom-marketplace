@@ -1,0 +1,19 @@
+{
+  "name": "cosmos-custom-marketplace",
+  "version": "1.0.0",
+  "description": "Custom Private Market Source for Cosmos-Server (Cosmos Cloud)",
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/validate-market.test.mjs"
+  },
+  "keywords": [
+    "cosmos",
+    "cosmos-server",
+    "marketplace",
+    "servapps",
+    "docker",
+    "self-hosted"
+  ],
+  "author": "Private Market Admin",
+  "license": "MIT"
+}

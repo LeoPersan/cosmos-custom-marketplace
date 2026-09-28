@@ -1,0 +1,126 @@
+{
+  "name": "Custom Private Market",
+  "description": "Catálogo corporativo e privado de ServApps e Runners modulares para Cosmos Cloud com deploy contínuo via Git, persistência em volume e proxy reverso inteligente.",
+  "author": "Private Market Admin",
+  "url": "https://github.com/custom-org/cosmos-marketplace",
+  "apps": [
+    {
+      "name": "Node.js 24 Git Runner",
+      "description": "Deploy contínuo e execução automatizada de aplicações Node.js 24 / TypeScript / SSR / APIs a partir de repositório Git com suporte a npm, yarn e pnpm.",
+      "category": "Development & Runtimes",
+      "tags": [
+        "nodejs",
+        "node24",
+        "typescript",
+        "javascript",
+        "pnpm",
+        "yarn",
+        "npm",
+        "git",
+        "runner",
+        "ssr",
+        "api"
+      ],
+      "icon": "apps/nodejs-git-runner/icon.png",
+      "details": "apps/nodejs-git-runner/description.json",
+      "compose": "apps/nodejs-git-runner/cosmos-compose.json"
+    },
+    {
+      "name": "Python 3.13 Git Runner",
+      "description": "Deploy automatizado de aplicações Python 3.13 (FastAPI, Flask, Django, Uvicorn, Gunicorn) com ambiente virtual isolado (.venv) e clonagem Git segura.",
+      "category": "Development & Runtimes",
+      "tags": [
+        "python",
+        "python3",
+        "fastapi",
+        "flask",
+        "django",
+        "uvicorn",
+        "gunicorn",
+        "git",
+        "runner",
+        "api"
+      ],
+      "icon": "apps/python-git-runner/icon.png",
+      "details": "apps/python-git-runner/description.json",
+      "compose": "apps/python-git-runner/cosmos-compose.json"
+    },
+    {
+      "name": "Golang 1.24 Git Runner",
+      "description": "Compilação e execução automatizada de microserviços e APIs em Golang 1.24 com cache de módulos e proxy Cosmos.",
+      "category": "Development & Runtimes",
+      "tags": [
+        "golang",
+        "go",
+        "go124",
+        "microservices",
+        "api",
+        "backend",
+        "git",
+        "runner"
+      ],
+      "icon": "apps/golang-git-runner/icon.png",
+      "details": "apps/golang-git-runner/description.json",
+      "compose": "apps/golang-git-runner/cosmos-compose.json"
+    },
+    {
+      "name": "Static & SPA Nginx Runner",
+      "description": "Deploy automatizado de sites estáticos e SPAs (React, Vue, Vite, Svelte, Astro, Angular) com Nginx de alta performance e roteamento SPA integrado.",
+      "category": "Development & Runtimes",
+      "tags": [
+        "nginx",
+        "spa",
+        "react",
+        "vue",
+        "vite",
+        "svelte",
+        "astro",
+        "static",
+        "frontend",
+        "git",
+        "runner"
+      ],
+      "icon": "apps/static-nginx-runner/icon.png",
+      "details": "apps/static-nginx-runner/description.json",
+      "compose": "apps/static-nginx-runner/cosmos-compose.json"
+    },
+    {
+      "name": "PHP 8.4 & Laravel Runner",
+      "description": "Deploy contínuo e execução otimizada de aplicações PHP 8.4, Laravel, Symfony e WordPress com Composer, Apache e extensões essenciais.",
+      "category": "Development & Runtimes",
+      "tags": [
+        "php",
+        "php84",
+        "laravel",
+        "symfony",
+        "wordpress",
+        "composer",
+        "apache",
+        "git",
+        "runner"
+      ],
+      "icon": "apps/php-laravel-runner/icon.png",
+      "details": "apps/php-laravel-runner/description.json",
+      "compose": "apps/php-laravel-runner/cosmos-compose.json"
+    },
+    {
+      "name": "Rust Git Runner",
+      "description": "Compilação otimizada (`cargo build --release`) e execução de binários web em Rust (Axum, Actix-web, Rocket) com cache de crates Cargo e proxy Cosmos.",
+      "category": "Development & Runtimes",
+      "tags": [
+        "rust",
+        "cargo",
+        "axum",
+        "actix",
+        "rocket",
+        "api",
+        "backend",
+        "git",
+        "runner"
+      ],
+      "icon": "apps/rust-git-runner/icon.png",
+      "details": "apps/rust-git-runner/description.json",
+      "compose": "apps/rust-git-runner/cosmos-compose.json"
+    }
+  ]
+}
