@@ -1,25 +1,80 @@
 {
-  "cosmos-compose": "1.0",
-  "min_cosmos_version": "0.14.0",
+  "cosmos-installer": {
+    "form": [
+      {
+        "name": "GIT_REPOSITORY_URL",
+        "label": "Git Repository URL (HTTPS)",
+        "initialValue": "",
+        "type": "text"
+      },
+      {
+        "name": "GIT_BRANCH",
+        "label": "Git Branch",
+        "initialValue": "main",
+        "type": "text"
+      },
+      {
+        "name": "GITHUB_TOKEN",
+        "label": "GitHub Personal Access Token (for private repos)",
+        "initialValue": "",
+        "type": "password"
+      },
+      {
+        "name": "INSTALL_CMD",
+        "label": "Install Command",
+        "initialValue": "npm install",
+        "type": "text"
+      },
+      {
+        "name": "BUILD_CMD",
+        "label": "Build Command",
+        "initialValue": "",
+        "type": "text"
+      },
+      {
+        "name": "START_CMD",
+        "label": "Start Command",
+        "initialValue": "npm start",
+        "type": "text"
+      },
+      {
+        "name": "APP_PORT",
+        "label": "Application HTTP Port",
+        "initialValue": "3000",
+        "type": "text"
+      }
+    ]
+  },
+  "minVersion": "0.8.0",
   "services": {
-    "app": {
+    "{ServiceName}": {
       "image": "node:24-alpine",
-      "container_name": "{NAME}",
+      "container_name": "{ServiceName}",
       "restart": "unless-stopped",
       "working_dir": "/app",
-      "environment": {
-        "NODE_ENV": "production",
-        "GIT_REPOSITORY_URL": "{GIT_REPOSITORY_URL:-}",
-        "GIT_BRANCH": "{GIT_BRANCH:-main}",
-        "GITHUB_TOKEN": "{GITHUB_TOKEN:-}",
-        "INSTALL_CMD": "{INSTALL_CMD:-npm install}",
-        "BUILD_CMD": "{BUILD_CMD:-}",
-        "START_CMD": "{START_CMD:-npm start}",
-        "APP_PORT": "{APP_PORT:-3000}",
-        "PORT": "{APP_PORT:-3000}"
+      "labels": {
+        "cosmos-force-network-secured": "true",
+        "cosmos-auto-update": "true",
+        "cosmos-stack": "{ServiceName}",
+        "cosmos-stack-main": "{ServiceName}"
       },
+      "environment": [
+        "NODE_ENV=production",
+        "GIT_REPOSITORY_URL={GIT_REPOSITORY_URL}",
+        "GIT_BRANCH={GIT_BRANCH}",
+        "GITHUB_TOKEN={GITHUB_TOKEN}",
+        "INSTALL_CMD={INSTALL_CMD}",
+        "BUILD_CMD={BUILD_CMD}",
+        "START_CMD={START_CMD}",
+        "APP_PORT={APP_PORT}",
+        "PORT={APP_PORT}"
+      ],
       "volumes": [
-        "{VOLUME_ROOT}/app:/app"
+        {
+          "source": "{ServiceName}-app",
+          "target": "/app",
+          "type": "volume"
+        }
       ],
       "command": [
         "sh",
@@ -28,13 +83,13 @@
       ],
       "routes": [
         {
-          "name": "{NAME}",
+          "name": "{ServiceName}",
           "description": "Rota principal HTTP do ServApp Node.js",
           "useHost": true,
-          "target": "http://{NAME}:{APP_PORT:-3000}",
-          "mode": "PROXY",
-          "smartShield": {
-            "enabled": true
+          "target": "http://{ServiceName}:3000",
+          "mode": "SERVAPP",
+          "SmartShield": {
+            "Enabled": true
           }
         }
       ]

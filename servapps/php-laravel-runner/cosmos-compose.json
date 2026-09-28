@@ -1,24 +1,73 @@
 {
-  "cosmos-compose": "1.0",
-  "min_cosmos_version": "0.14.0",
+  "cosmos-installer": {
+    "form": [
+      {
+        "name": "GIT_REPOSITORY_URL",
+        "label": "Git Repository URL (HTTPS)",
+        "initialValue": "",
+        "type": "text"
+      },
+      {
+        "name": "GIT_BRANCH",
+        "label": "Git Branch",
+        "initialValue": "main",
+        "type": "text"
+      },
+      {
+        "name": "GITHUB_TOKEN",
+        "label": "GitHub Personal Access Token (for private repos)",
+        "initialValue": "",
+        "type": "password"
+      },
+      {
+        "name": "DOCUMENT_ROOT",
+        "label": "DocumentRoot (e.g. public for Laravel or . for root)",
+        "initialValue": "public",
+        "type": "text"
+      },
+      {
+        "name": "INSTALL_CMD",
+        "label": "Composer Install Command",
+        "initialValue": "composer install --no-interaction --prefer-dist --optimize-autoloader",
+        "type": "text"
+      },
+      {
+        "name": "BUILD_CMD",
+        "label": "Build / Artisan Command",
+        "initialValue": "",
+        "type": "text"
+      }
+    ]
+  },
+  "minVersion": "0.8.0",
   "services": {
-    "app": {
+    "{ServiceName}": {
       "image": "php:8.4-apache",
-      "container_name": "{NAME}",
+      "container_name": "{ServiceName}",
       "restart": "unless-stopped",
       "working_dir": "/var/www/html",
-      "environment": {
-        "GIT_REPOSITORY_URL": "{GIT_REPOSITORY_URL:-}",
-        "GIT_BRANCH": "{GIT_BRANCH:-main}",
-        "GITHUB_TOKEN": "{GITHUB_TOKEN:-}",
-        "DOCUMENT_ROOT": "{DOCUMENT_ROOT:-public}",
-        "INSTALL_CMD": "{INSTALL_CMD:-composer install --no-interaction --prefer-dist --optimize-autoloader}",
-        "BUILD_CMD": "{BUILD_CMD:-}",
-        "APP_PORT": "80",
-        "PORT": "80"
+      "labels": {
+        "cosmos-force-network-secured": "true",
+        "cosmos-auto-update": "true",
+        "cosmos-stack": "{ServiceName}",
+        "cosmos-stack-main": "{ServiceName}"
       },
+      "environment": [
+        "GIT_REPOSITORY_URL={GIT_REPOSITORY_URL}",
+        "GIT_BRANCH={GIT_BRANCH}",
+        "GITHUB_TOKEN={GITHUB_TOKEN}",
+        "DOCUMENT_ROOT={DOCUMENT_ROOT}",
+        "INSTALL_CMD={INSTALL_CMD}",
+        "BUILD_CMD={BUILD_CMD}",
+        "APP_PORT=80",
+        "PORT=80"
+      ],
       "volumes": [
-        "{VOLUME_ROOT}/html:/var/www/html"
+        {
+          "source": "{ServiceName}-html",
+          "target": "/var/www/html",
+          "type": "volume"
+        }
       ],
       "command": [
         "sh",
@@ -27,13 +76,13 @@
       ],
       "routes": [
         {
-          "name": "{NAME}",
+          "name": "{ServiceName}",
           "description": "Rota principal HTTP do ServApp PHP/Laravel",
           "useHost": true,
-          "target": "http://{NAME}:80",
-          "mode": "PROXY",
-          "smartShield": {
-            "enabled": true
+          "target": "http://{ServiceName}:80",
+          "mode": "SERVAPP",
+          "SmartShield": {
+            "Enabled": true
           }
         }
       ]

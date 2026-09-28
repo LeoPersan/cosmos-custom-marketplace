@@ -1,25 +1,78 @@
 {
-  "cosmos-compose": "1.0",
-  "min_cosmos_version": "0.14.0",
+  "cosmos-installer": {
+    "form": [
+      {
+        "name": "GIT_REPOSITORY_URL",
+        "label": "Git Repository URL (HTTPS)",
+        "initialValue": "",
+        "type": "text"
+      },
+      {
+        "name": "GIT_BRANCH",
+        "label": "Git Branch",
+        "initialValue": "main",
+        "type": "text"
+      },
+      {
+        "name": "GITHUB_TOKEN",
+        "label": "GitHub Personal Access Token (for private repos)",
+        "initialValue": "",
+        "type": "password"
+      },
+      {
+        "name": "DIST_DIR",
+        "label": "Build Output Directory (e.g. dist, build, public)",
+        "initialValue": "dist",
+        "type": "text"
+      },
+      {
+        "name": "INSTALL_CMD",
+        "label": "Install Command",
+        "initialValue": "npm install",
+        "type": "text"
+      },
+      {
+        "name": "BUILD_CMD",
+        "label": "Build Command",
+        "initialValue": "npm run build",
+        "type": "text"
+      }
+    ]
+  },
+  "minVersion": "0.8.0",
   "services": {
-    "app": {
+    "{ServiceName}": {
       "image": "nginx:alpine",
-      "container_name": "{NAME}",
+      "container_name": "{ServiceName}",
       "restart": "unless-stopped",
       "working_dir": "/app",
-      "environment": {
-        "GIT_REPOSITORY_URL": "{GIT_REPOSITORY_URL:-}",
-        "GIT_BRANCH": "{GIT_BRANCH:-main}",
-        "GITHUB_TOKEN": "{GITHUB_TOKEN:-}",
-        "DIST_DIR": "{DIST_DIR:-dist}",
-        "INSTALL_CMD": "{INSTALL_CMD:-npm install}",
-        "BUILD_CMD": "{BUILD_CMD:-npm run build}",
-        "APP_PORT": "80",
-        "PORT": "80"
+      "labels": {
+        "cosmos-force-network-secured": "true",
+        "cosmos-auto-update": "true",
+        "cosmos-stack": "{ServiceName}",
+        "cosmos-stack-main": "{ServiceName}"
       },
+      "environment": [
+        "GIT_REPOSITORY_URL={GIT_REPOSITORY_URL}",
+        "GIT_BRANCH={GIT_BRANCH}",
+        "GITHUB_TOKEN={GITHUB_TOKEN}",
+        "DIST_DIR={DIST_DIR}",
+        "INSTALL_CMD={INSTALL_CMD}",
+        "BUILD_CMD={BUILD_CMD}",
+        "APP_PORT=80",
+        "PORT=80"
+      ],
       "volumes": [
-        "{VOLUME_ROOT}/app:/app",
-        "{VOLUME_ROOT}/nginx-html:/usr/share/nginx/html"
+        {
+          "source": "{ServiceName}-app",
+          "target": "/app",
+          "type": "volume"
+        },
+        {
+          "source": "{ServiceName}-nginx-html",
+          "target": "/usr/share/nginx/html",
+          "type": "volume"
+        }
       ],
       "command": [
         "sh",
@@ -28,13 +81,13 @@
       ],
       "routes": [
         {
-          "name": "{NAME}",
+          "name": "{ServiceName}",
           "description": "Rota principal HTTP do ServApp Nginx Estático / SPA",
           "useHost": true,
-          "target": "http://{NAME}:80",
-          "mode": "PROXY",
-          "smartShield": {
-            "enabled": true
+          "target": "http://{ServiceName}:80",
+          "mode": "SERVAPP",
+          "SmartShield": {
+            "Enabled": true
           }
         }
       ]
