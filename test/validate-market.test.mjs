@@ -58,6 +58,15 @@ describe('Cosmos Market Source - Official Schema Test Suite', () => {
       // Check compose content
       const compose = JSON.parse(fs.readFileSync(path.join(appDir, 'cosmos-compose.json'), 'utf-8'));
       assert.ok(compose.services, `Missing services in ${app.id} compose`);
+      assert.ok(compose.services['{ServiceName}'], `Missing {ServiceName} in ${app.id} compose`);
+      
+      const service = compose.services['{ServiceName}'];
+      // Backend compatibility: command MUST be string (Cosmos Go backend unmarshals to string)
+      assert.equal(typeof service.command, 'string', `command in ${app.id} must be a string for Cosmos Go unmarshaling`);
+      // Frontend compatibility: environment MUST be array of strings (React setup.jsx calls .map())
+      assert.ok(Array.isArray(service.environment), `environment in ${app.id} must be an array for Cosmos React setup form`);
+      // Form definition
+      assert.ok(compose['cosmos-installer'] && Array.isArray(compose['cosmos-installer'].form), `cosmos-installer.form must be an array in ${app.id}`);
     }
   });
 

@@ -33,9 +33,17 @@ for (const folder of appFolders) {
   };
 
   // Sync back to apps folder if present
-  const appsDescPath = path.join(__dirname, 'apps', folder, 'description.json');
-  if (fs.existsSync(path.dirname(appsDescPath))) {
-    fs.writeFileSync(appsDescPath, JSON.stringify(desc, null, 2));
+  const appsAppDir = path.join(__dirname, 'apps', folder);
+  if (fs.existsSync(appsAppDir)) {
+    fs.writeFileSync(path.join(appsAppDir, 'description.json'), JSON.stringify(desc, null, 2));
+    const composeSource = path.join(servappsDir, folder, 'cosmos-compose.json');
+    if (fs.existsSync(composeSource)) {
+      fs.copyFileSync(composeSource, path.join(appsAppDir, 'cosmos-compose.json'));
+    }
+    const iconSource = path.join(servappsDir, folder, 'icon.png');
+    if (fs.existsSync(iconSource)) {
+      fs.copyFileSync(iconSource, path.join(appsAppDir, 'icon.png'));
+    }
   }
 
   servappsList.push(servapp);
