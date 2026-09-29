@@ -1,119 +1,146 @@
-# 🌌 Custom Private Market para Cosmos-Server (Cosmos Cloud)
+# 🌌 Custom Private Marketplace & App Store
 
-Repositório oficial/privado de receitas e **ServApps modulares** para o [Cosmos-Server](https://cosmos-cloud.io/). Este repositório atua como uma **Market Source** customizada, fornecendo *Runners* de deploy contínuo para múltiplos runtimes e stacks modernas com clonagem Git segura, montagem persistente e integração nativa ao Reverse Proxy e Smart Shield do Cosmos.
+Repositório unificado de receitas e **Git Runners modulares** com suporte simultâneo nativo para **Cosmos-Server (Cosmos Cloud)** e **ZimaOS / CasaOS (IceWhale)**. 
 
----
-
-## 📦 Catálogo de ServApps Disponíveis
-
-| Ícone | ServApp | Runtime / Versão | Stacks & Casos de Uso |
-| :---: | :--- | :--- | :--- |
-| ![Node.js](apps/nodejs-git-runner/icon.png) | **Node.js 24 Git Runner** | `node:24-alpine` | APIs, Next.js, Remix, Astro, Express, Fastify, NestJS (`npm`, `yarn`, `pnpm`). |
-| ![Python](apps/python-git-runner/icon.png) | **Python 3.13 Git Runner** | `python:3.13-slim` | FastAPI, Flask, Django, Uvicorn, Gunicorn com ambiente virtual `.venv` isolado. |
-| ![Go](apps/golang-git-runner/icon.png) | **Golang 1.24 Git Runner** | `golang:1.24-alpine` | Microserviços compilados, APIs REST e gRPC com cache de módulos `go mod`. |
-| ![Nginx](apps/static-nginx-runner/icon.png) | **Static & SPA Nginx Runner** | `nginx:alpine` | SPAs (React, Vue, Vite, Svelte, Angular) e sites estáticos com roteamento SPA `try_files`. |
-| ![PHP](apps/php-laravel-runner/icon.png) | **PHP 8.4 & Laravel Runner** | `php:8.4-apache` | Laravel, Symfony, WordPress, Composer e Apache com suporte a `.htaccess`. |
-| ![Rust](apps/rust-git-runner/icon.png) | **Rust Git Runner** | `rust:alpine` | Actix-web, Axum, Rocket com compilação release otimizada (`cargo build --release`). |
+Atua como uma **Market Source** customizada e **Community App Store**, fornecendo ambientes de deploy contínuo para múltiplos runtimes com clonagem Git segura, montagem de volumes persistentes, isolamento de build e suporte a autenticação por Personal Access Token (PAT).
 
 ---
 
-## 🚀 Como Adicionar esta Fonte ao Cosmos-Server
+## 📦 Catálogo de ServApps & Runners Disponíveis
 
-Para registrar este marketplace na sua instância do Cosmos:
+| Ícone | Runner / ServApp | Runtime / Imagem | Porta Padrão | Stacks & Casos de Uso |
+| :---: | :--- | :--- | :---: | :--- |
+| ![Node.js](Apps/nodejs-git-runner/icon.png) | **Node.js 24 Git Runner** | `node:24-alpine` | `3000` | APIs, Next.js, Remix, Astro, Express, Fastify, NestJS (`npm`, `yarn`, `pnpm`). |
+| ![Python](Apps/python-git-runner/icon.png) | **Python 3.13 Git Runner** | `python:3.13-slim` | `8000` | FastAPI, Flask, Django, Uvicorn, Gunicorn com ambiente virtual `.venv` persistente. |
+| ![Go](Apps/golang-git-runner/icon.png) | **Golang 1.24 Git Runner** | `golang:1.24-alpine` | `8080` | Microserviços compilados, APIs REST e gRPC com cache de módulos `go mod`. |
+| ![Nginx](Apps/static-nginx-runner/icon.png) | **Static & SPA Nginx Runner** | `nginx:alpine` | `80` | SPAs (React, Vue, Vite, Svelte, Angular) e sites estáticos com roteamento SPA `try_files`. |
+| ![PHP](Apps/php-laravel-runner/icon.png) | **PHP 8.4 & Laravel Runner** | `php:8.4-apache` | `80` | Laravel, Symfony, WordPress, Composer e Apache com suporte a `.htaccess`. |
+| ![Rust](Apps/rust-git-runner/icon.png) | **Rust Git Runner** | `rust:alpine` | `8080` | Actix-web, Axum, Rocket com compilação release otimizada (`cargo build --release`). |
+
+---
+
+## 🚀 Como Registrar esta Fonte nos Servidores
+
+### 1️⃣ No Cosmos-Server (Cosmos Cloud)
 
 1. Acesse o painel web do seu **Cosmos-Server**.
 2. No menu lateral, navegue até **Market** > **Sources**.
 3. Clique no botão **Add Source** (Adicionar Fonte).
 4. Preencha os campos:
    - **Name**: `Custom Private Market`
-   - **URL**: Insira a URL do repositório Git ou o link direto para o `index.json` (ex: `https://raw.githubusercontent.com/<SEU_USUARIO>/<SEU_REPOSITORIO>/main/index.json` ou a URL do Git).
+   - **URL**: `https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/index.json` (ou URL Git do repositório).
 5. Clique em **Save** / **Update Sources**.
-6. Agora, ao abrir a aba **Market**, todos os novos ServApps estarão disponíveis para instalação com 1 clique!
+6. Acesse a aba **Market** e todos os ServApps estarão disponíveis com 1 clique, integrados ao Smart Shield e Reverse Proxy.
 
 ---
 
-## ⚙️ Parâmetros Configuráveis nos ServApps
+### 2️⃣ No ZimaOS / CasaOS (IceWhale)
 
-Ao instalar qualquer ServApp deste catálogo através da interface do Cosmos, você terá acesso a um formulário guiado com os seguintes parâmetros:
+1. Acesse o painel web do seu **ZimaOS** ou **CasaOS**.
+2. Abra a **App Store**.
+3. Clique em **Community Store** / ícone de engrenagem no canto superior da App Store.
+4. Clique no botão **"+"** (Adicionar Fonte).
+5. Cole a URL do manifesto `store.json`:
+   ```text
+   https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/store.json
+   ```
+6. Clique em **Salvar** / **Submit**.
+7. Todos os runners aparecerão catalogados nas categorias *Development* e *Utilities*, prontos para deploy com formulário de configuração visual.
 
-| Variável | Descrição | Exemplo |
-| :--- | :--- | :--- |
-| `GIT_REPOSITORY_URL` | URL HTTPS do repositório a ser clonado | `https://github.com/org/meu-app.git` |
-| `GIT_BRANCH` | Branch para deploy e sincronização | `main` (padrão) |
-| `GITHUB_TOKEN` | Token de Acesso Pessoal (PAT) para repositórios privados | `ghp_xxxxxxxxxxxx` |
-| `INSTALL_CMD` | Comando para instalar dependências | `npm install` / `pip install -r requirements.txt` |
-| `BUILD_CMD` | Comando opcional de build/compilação | `npm run build` / `cargo build --release` |
-| `START_CMD` | Comando executado para iniciar o servidor | `npm start` / `uvicorn main:app --host 0.0.0.0` |
-| `APP_PORT` | Porta HTTP interna exposta pelo serviço | `3000` (Node), `8000` (Python), `8080` (Go/Rust), `80` (Nginx/PHP) |
+> 💡 **Dica (Instalação Avulsa)**: Caso queira instalar um runner avulso sem adicionar a loja inteira, você pode utilizar o botão **Custom Install** na App Store do ZimaOS e colar o conteúdo de qualquer arquivo [`Apps/<app>/docker-compose.yml`](Apps/).
+
+---
+
+## ⚙️ Parâmetros Configuráveis nos Runners
+
+Ao instalar qualquer runner em qualquer um dos servidores, os seguintes parâmetros podem ser ajustados:
+
+| Variável | Descrição | Exemplo | Padrão |
+| :--- | :--- | :--- | :--- |
+| `GIT_REPOSITORY_URL` | URL HTTPS do repositório a ser clonado | `https://github.com/org/meu-app.git` | `""` (inicia com app demo) |
+| `GIT_BRANCH` | Branch para deploy e sincronização | `main` | `main` |
+| `GITHUB_TOKEN` | Token de Acesso Pessoal (PAT) para repositórios privados | `ghp_xxxxxxxxxxxx` | `""` |
+| `INSTALL_CMD` | Comando para instalar dependências | `npm install` / `pip install -r requirements.txt` | Específico por runtime |
+| `BUILD_CMD` | Comando opcional de build/compilação | `npm run build` / `cargo build --release` | `""` |
+| `START_CMD` | Comando executado para iniciar o servidor | `npm start` / `uvicorn main:app --host 0.0.0.0` | Específico por runtime |
+| `APP_PORT` | Porta HTTP interna da aplicação | `3000`, `8000`, `8080`, `80` | Porta padrão do runtime |
 
 ---
 
 ## 🔐 Repositórios Privados (GitHub / GitLab / Bitbucket)
 
-Para clonar repositórios privados sem expor chaves SSH no container:
+Para clonar repositórios privados com segurança:
 
 1. Crie um **Personal Access Token (PAT)** no seu provedor Git:
-   - **GitHub**: `Settings` > `Developer Settings` > `Personal access tokens` > `Fine-grained tokens` (permissão de *Contents: Read-only*).
-   - **GitLab**: `Preferences` > `Access Tokens` (escopo `read_repository`).
-2. No momento da instalação do ServApp no Cosmos, cole o token no campo **GitHub Personal Access Token (`GITHUB_TOKEN`)**.
-3. O runner injeta automaticamente as credenciais seguras durante o `git clone` e `git pull`.
+   - **GitHub**: `Settings` > `Developer Settings` > `Personal access tokens` > `Fine-grained tokens` (permissão *Contents: Read-only*).
+   - **GitLab**: `Preferences` > `Access Tokens` (escopo *read_repository*).
+2. Cole o token no campo **`GITHUB_TOKEN`** durante a instalação.
+3. O runner injeta automaticamente as credenciais durante `git clone` e `git pull` sem salvar chaves permanentes no container.
 
 ---
 
 ## 🔄 Ciclo de Vida & Execução Idempotente
 
-Cada ServApp utiliza um script de inicialização projetado para execução idempotente e persistência de dados:
-
 ```text
-Host Storage ({VOLUME_ROOT})
-  └── /app                 <- Código clonado e dependências cacheadas
+Host Storage (Volume Persistente)
+  └── /app                 <- Código clonado, virtualenvs e dependências cacheadas
 ```
 
 1. **Primeira Inicialização**:
-   - Se o volume `/app` não contiver um repositório `.git`, o runner executa `git clone --branch <BRANCH>`.
-   - Se nenhuma URL for informada, o runner inicializa uma aplicação demo de exemplo pronta para testar o proxy.
-2. **Reinicializações do Container**:
-   - Se o repositório já existir, o runner executa `git fetch` e `git pull`, garantindo que o container inicie sempre com a versão mais recente sem perder arquivos gerados.
+   - Se o volume `/app` não contiver `.git`, o runner clona a branch especificada.
+   - Se nenhuma URL for informada, inicializa uma aplicação demo para testes rápidos.
+2. **Reinicializações**:
+   - Executa `git fetch` e `git pull`, garantindo que o container inicie com a versão mais recente sem apagar caches locais.
 3. **Build & Dependências**:
-   - Dependências e caches de compilação ficam salvos no volume persistente `{VOLUME_ROOT}`, evitando downloads redundantes.
-4. **Reverse Proxy & Smart Shield**:
-   - Cada receita já declara a rota `routes` integrada ao Cosmos-Server, configurada com `mode: "PROXY"`, `useHost: true` e `smartShield: { "enabled": true }` para segurança anti-DDoS, rate-limiting e suporte nativo a 2FA/autenticação.
+   - As dependências e módulos de compilação permanecem persistidos no volume.
 
 ---
 
 ## 🛠️ Estrutura do Repositório
 
-Para adicionar novos ServApps a esta loja, siga o padrão de diretórios:
-
 ```text
 .
-├── index.json                             # Catálogo central que indexa todos os apps
-├── README.md                              # Guia de configuração e uso
+├── Apps/                                   # Loja ZimaOS / CasaOS (v2 Compose + x-casaos)
+│   ├── nodejs-git-runner/
+│   │   ├── docker-compose.yml
+│   │   └── icon.png
+│   └── ...
+├── servapps/                               # Fonte Cosmos-Server (JSON recipes)
+│   ├── nodejs-git-runner/
+│   │   ├── cosmos-compose.json
+│   │   ├── description.json
+│   │   └── icon.png
+│   └── ...
+├── store.json                              # Manifesto raiz ZimaOS v2
+├── category-list.json                      # Categorias ZimaOS
+├── recommend-list.json                     # Apps recomendados ZimaOS
+├── servapps.json                           # Manifesto Cosmos (lista de ServApps)
+├── index.json                              # Catálogo central Cosmos (showcase + all)
+├── build.js                                # Compilador unificado dual-target
 ├── test/
-│   └── validate-market.test.mjs           # Validador de integridade e schemas JSON
-└── apps/
-    └── <identificador-do-app>/
-        ├── cosmos-compose.json            # Definição do container, volumes, comandos e rotas
-        ├── description.json               # Metadados, tags e formulário de parâmetros (UI)
-        └── icon.png                       # Ícone visual (256x256 PNG)
+│   └── validate-market.test.mjs            # Suíte de testes automatizados caixa-preta
+└── README.md
 ```
 
 ---
 
-## 🧪 Validação Automatizada
+## 🧪 Compilação & Validação Automatizada
 
-Para validar a integridade de todas as receitas e schemas antes de enviar novas alterações:
+Para compilar e validar os catálogos de ambos os servidores:
 
 ```bash
+# Compilar e sincronizar os catálogos Cosmos e ZimaOS
+npm run build
+
+# Executar suíte de testes de integridade e conformidade de schemas
 npm test
 ```
 
 A suíte de testes verifica:
-- Sintaxe e schemas de `index.json`, `description.json` e `cosmos-compose.json`.
-- Existência e integridade física de todos os ícones e arquivos referenciados.
-- Presença de volumes `{VOLUME_ROOT}` para persistência.
-- Configuração de rotas de proxy reverso e Smart Shield.
-- Lógica idempotente de scripts de inicialização.
+- Conformidade dos schemas Cosmos (`index.json`, `servapps.json`, `cosmos-compose.json`).
+- Conformidade dos schemas ZimaOS (`store.json`, `category-list.json`, `docker-compose.yml` com `x-casaos`).
+- Paridade de 100% dos 6 runners em ambos os ecossistemas.
+- Integridade física de todos os ícones e arquivos referenciados.
 
 ---
 
