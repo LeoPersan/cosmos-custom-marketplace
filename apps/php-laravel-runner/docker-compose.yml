@@ -94,6 +94,7 @@ volumes:
   php_laravel_runner_data:
 
 x-casaos:
+  id: com.leopersan.php-laravel-runner
   architectures:
     - amd64
     - arm64
@@ -107,10 +108,11 @@ x-casaos:
     pt_br: "PHP 8.4 & Laravel Runner Runner"
   developer: "Private Market Admin"
   author: "Private Market Admin"
-  icon: "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/php-laravel-runner/icon.png"
-  thumbnail: "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/php-laravel-runner/icon.png"
+  icon: "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/com.leopersan.php-laravel-runner/icon.png"
+  thumbnail: "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/com.leopersan.php-laravel-runner/icon.png"
   title:
     en_us: "PHP 8.4 & Laravel Runner"
+    pt_br: "PHP 8.4 & Laravel Runner"
   category: "Development"
   port_map: "80"
   index: /

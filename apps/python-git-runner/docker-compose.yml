@@ -89,6 +89,7 @@ volumes:
   python_git_runner_data:
 
 x-casaos:
+  id: com.leopersan.python-git-runner
   architectures:
     - amd64
     - arm64
@@ -102,10 +103,11 @@ x-casaos:
     pt_br: "Python 3.13 Git Runner Runner"
   developer: "Private Market Admin"
   author: "Private Market Admin"
-  icon: "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/python-git-runner/icon.png"
-  thumbnail: "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/python-git-runner/icon.png"
+  icon: "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/com.leopersan.python-git-runner/icon.png"
+  thumbnail: "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/com.leopersan.python-git-runner/icon.png"
   title:
     en_us: "Python 3.13 Git Runner"
+    pt_br: "Python 3.13 Git Runner"
   category: "Development"
   port_map: "8000"
   index: /

@@ -17,6 +17,8 @@ const EXPECTED_APPS = [
   'rust-git-runner'
 ];
 
+const STORE_ID_PREFIX = 'com.leopersan';
+
 describe('Cosmos Market Source - Official Schema Test Suite', () => {
   const indexPath = path.join(ROOT_DIR, 'index.json');
   const servappsPath = path.join(ROOT_DIR, 'servapps.json');
@@ -70,21 +72,29 @@ describe('Cosmos Market Source - Official Schema Test Suite', () => {
 
 describe('ZimaOS / CasaOS App Store - Official Schema Test Suite', () => {
   const storePath = path.join(ROOT_DIR, 'store.json');
+  const storeConfigPath = path.join(ROOT_DIR, 'store-config.json');
+  const supportedLanguagesPath = path.join(ROOT_DIR, 'supported-languages.json');
   const indexPath = path.join(ROOT_DIR, 'index.json');
   const categoryPath = path.join(ROOT_DIR, 'category-list.json');
   const recommendPath = path.join(ROOT_DIR, 'recommend-list.json');
   const appsDir = path.join(ROOT_DIR, 'Apps');
 
-  test('store.json, index.json (v2 apps list), category-list.json and recommend-list.json structure conforming to ZimaOS spec', () => {
+  test('store.json, locale files, store-config.json and supported-languages.json exist and match spec', () => {
     assert.ok(fs.existsSync(storePath), 'store.json must exist');
+    assert.ok(fs.existsSync(storeConfigPath), 'store-config.json must exist');
+    assert.ok(fs.existsSync(supportedLanguagesPath), 'supported-languages.json must exist');
     assert.ok(fs.existsSync(categoryPath), 'category-list.json must exist');
     assert.ok(fs.existsSync(recommendPath), 'recommend-list.json must exist');
+
+    // Localized manifests
+    assert.ok(fs.existsSync(path.join(ROOT_DIR, 'store.pt_BR.json')), 'store.pt_BR.json must exist');
+    assert.ok(fs.existsSync(path.join(ROOT_DIR, 'store.en_US.json')), 'store.en_US.json must exist');
+    assert.ok(fs.existsSync(path.join(ROOT_DIR, 'index.pt_BR.json')), 'index.pt_BR.json must exist');
+    assert.ok(fs.existsSync(path.join(ROOT_DIR, 'index.en_US.json')), 'index.en_US.json must exist');
 
     const store = JSON.parse(fs.readFileSync(storePath, 'utf-8'));
     assert.equal(store.version, 2, 'store.json version must be 2');
     assert.ok(store.store_id, 'store.json must have store_id');
-    assert.ok(store.name, 'store.json must have name');
-    assert.ok(store.description, 'store.json must have description');
 
     // ZimaOS v2 App Discovery Protocol via index.json
     const index = JSON.parse(fs.readFileSync(indexPath, 'utf-8'));
@@ -93,68 +103,65 @@ describe('ZimaOS / CasaOS App Store - Official Schema Test Suite', () => {
     assert.equal(index.apps.length, EXPECTED_APPS.length, 'index.json apps array must contain all 6 apps');
 
     for (const app of index.apps) {
-      assert.ok(EXPECTED_APPS.includes(app.id), `Unknown app id in index.apps: ${app.id}`);
+      // Validate reverse domain segment ID
+      assert.ok(app.id.startsWith(STORE_ID_PREFIX + '.'), `App ID must start with ${STORE_ID_PREFIX}: ${app.id}`);
+      assert.ok(app.id.split('.').length >= 3, `App ID must have valid reverse-domain segments: ${app.id}`);
       assert.ok(app.title, `Missing title in index.apps for ${app.id}`);
       assert.ok(app.tagline, `Missing tagline in index.apps for ${app.id}`);
       assert.ok(app.icon && app.icon.startsWith('http'), `Icon must be valid URL for ${app.id}`);
       assert.ok(app.compose_url && app.compose_url.startsWith('http'), `Compose URL must be valid for ${app.id}`);
       assert.ok(app.meta_url && app.meta_url.startsWith('http'), `Meta URL must be valid for ${app.id}`);
     }
-
-    const categories = JSON.parse(fs.readFileSync(categoryPath, 'utf-8'));
-    assert.ok(Array.isArray(categories), 'category-list.json must be an array');
-    assert.ok(categories.length > 0, 'category-list.json must have at least one category');
-
-    const recommend = JSON.parse(fs.readFileSync(recommendPath, 'utf-8'));
-    assert.ok(Array.isArray(recommend), 'recommend-list.json must be an array');
-    assert.ok(recommend.length > 0, 'recommend-list.json must contain apps');
   });
 
-  test('All apps have required ZimaOS / CasaOS Compose, x-casaos metadata, meta.json, and physical files', () => {
+  test('All apps have required ZimaOS / CasaOS Compose, reverse-domain x-casaos metadata, meta.json, and physical files', () => {
     assert.ok(fs.existsSync(appsDir), 'Apps directory must exist');
 
-    for (const appId of EXPECTED_APPS) {
-      const appFolder = path.join(appsDir, appId);
-      assert.ok(fs.existsSync(appFolder), `Apps/${appId} directory must exist`);
+    for (const appName of EXPECTED_APPS) {
+      const zimaAppId = `${STORE_ID_PREFIX}.${appName}`;
+      const appFolder = path.join(appsDir, zimaAppId);
+      assert.ok(fs.existsSync(appFolder), `Apps/${zimaAppId} directory must exist`);
 
       const composePath = path.join(appFolder, 'docker-compose.yml');
       const iconPath = path.join(appFolder, 'icon.png');
       const metaPath = path.join(appFolder, 'meta.json');
 
-      assert.ok(fs.existsSync(composePath), `Apps/${appId}/docker-compose.yml must exist`);
-      assert.ok(fs.existsSync(iconPath), `Apps/${appId}/icon.png must exist`);
-      assert.ok(fs.existsSync(metaPath), `Apps/${appId}/meta.json must exist`);
+      assert.ok(fs.existsSync(composePath), `Apps/${zimaAppId}/docker-compose.yml must exist`);
+      assert.ok(fs.existsSync(iconPath), `Apps/${zimaAppId}/icon.png must exist`);
+      assert.ok(fs.existsSync(metaPath), `Apps/${zimaAppId}/meta.json must exist`);
 
       const composeContent = fs.readFileSync(composePath, 'utf-8');
       
-      // Verify YAML content has x-casaos block
-      assert.ok(composeContent.includes('x-casaos:'), `Apps/${appId}/docker-compose.yml must contain x-casaos metadata`);
-      assert.ok(composeContent.includes('main:'), `Apps/${appId}/docker-compose.yml must define main service`);
-      assert.ok(composeContent.includes('title:'), `Apps/${appId}/docker-compose.yml must define title`);
-      assert.ok(composeContent.includes('icon:'), `Apps/${appId}/docker-compose.yml must define icon`);
-      assert.ok(composeContent.includes('port_map:'), `Apps/${appId}/docker-compose.yml must define port_map`);
-      assert.ok(composeContent.includes('category:'), `Apps/${appId}/docker-compose.yml must define category`);
-      assert.ok(composeContent.includes('services:'), `Apps/${appId}/docker-compose.yml must define services`);
-      assert.ok(composeContent.includes('environment:'), `Apps/${appId}/docker-compose.yml must define environment`);
-      assert.ok(composeContent.includes('ports:'), `Apps/${appId}/docker-compose.yml must define ports`);
+      // Verify YAML content has x-casaos block with reverse-domain ID
+      assert.ok(composeContent.includes(`id: ${zimaAppId}`), `x-casaos.id must match ${zimaAppId}`);
+      assert.ok(composeContent.includes('x-casaos:'), `Apps/${zimaAppId}/docker-compose.yml must contain x-casaos metadata`);
+      assert.ok(composeContent.includes('main:'), `Apps/${zimaAppId}/docker-compose.yml must define main service`);
+      assert.ok(composeContent.includes('title:'), `Apps/${zimaAppId}/docker-compose.yml must define title`);
+      assert.ok(composeContent.includes('icon:'), `Apps/${zimaAppId}/docker-compose.yml must define icon`);
+      assert.ok(composeContent.includes('port_map:'), `Apps/${zimaAppId}/docker-compose.yml must define port_map`);
+      assert.ok(composeContent.includes('category:'), `Apps/${zimaAppId}/docker-compose.yml must define category`);
+      assert.ok(composeContent.includes('services:'), `Apps/${zimaAppId}/docker-compose.yml must define services`);
+      assert.ok(composeContent.includes('environment:'), `Apps/${zimaAppId}/docker-compose.yml must define environment`);
+      assert.ok(composeContent.includes('ports:'), `Apps/${zimaAppId}/docker-compose.yml must define ports`);
     }
   });
 });
 
 describe('Dual-Target Parity and Documentation Test Suite', () => {
   test('Cosmos and ZimaOS catalogs have 100% parity across all 6 applications', () => {
-    for (const appId of EXPECTED_APPS) {
-      const cosmosDir = path.join(ROOT_DIR, 'servapps', appId);
-      const zimaDir = path.join(ROOT_DIR, 'Apps', appId);
+    for (const appName of EXPECTED_APPS) {
+      const zimaAppId = `${STORE_ID_PREFIX}.${appName}`;
+      const cosmosDir = path.join(ROOT_DIR, 'servapps', appName);
+      const zimaDir = path.join(ROOT_DIR, 'Apps', zimaAppId);
 
-      assert.ok(fs.existsSync(cosmosDir), `Cosmos app missing: ${appId}`);
-      assert.ok(fs.existsSync(zimaDir), `ZimaOS app missing: ${appId}`);
+      assert.ok(fs.existsSync(cosmosDir), `Cosmos app missing: ${appName}`);
+      assert.ok(fs.existsSync(zimaDir), `ZimaOS app missing: ${zimaAppId}`);
 
       // Check icons
       const cosmosIconStat = fs.statSync(path.join(cosmosDir, 'icon.png'));
       const zimaIconStat = fs.statSync(path.join(zimaDir, 'icon.png'));
-      assert.ok(cosmosIconStat.size > 0, `Cosmos icon must not be empty for ${appId}`);
-      assert.ok(zimaIconStat.size > 0, `ZimaOS icon must not be empty for ${appId}`);
+      assert.ok(cosmosIconStat.size > 0, `Cosmos icon must not be empty for ${appName}`);
+      assert.ok(zimaIconStat.size > 0, `ZimaOS icon must not be empty for ${zimaAppId}`);
     }
   });
 

@@ -100,6 +100,7 @@ volumes:
   rust_git_runner_data:
 
 x-casaos:
+  id: com.leopersan.rust-git-runner
   architectures:
     - amd64
     - arm64
@@ -113,10 +114,11 @@ x-casaos:
     pt_br: "Rust Git Runner Runner"
   developer: "Private Market Admin"
   author: "Private Market Admin"
-  icon: "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/rust-git-runner/icon.png"
-  thumbnail: "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/rust-git-runner/icon.png"
+  icon: "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/com.leopersan.rust-git-runner/icon.png"
+  thumbnail: "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/com.leopersan.rust-git-runner/icon.png"
   title:
     en_us: "Rust Git Runner"
+    pt_br: "Rust Git Runner"
   category: "Development"
   port_map: "8080"
   index: /

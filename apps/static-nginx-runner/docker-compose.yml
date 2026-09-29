@@ -109,6 +109,7 @@ volumes:
   static_nginx_runner_data:
 
 x-casaos:
+  id: com.leopersan.static-nginx-runner
   architectures:
     - amd64
     - arm64
@@ -122,10 +123,11 @@ x-casaos:
     pt_br: "Static & SPA Nginx Runner Runner"
   developer: "Private Market Admin"
   author: "Private Market Admin"
-  icon: "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/static-nginx-runner/icon.png"
-  thumbnail: "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/static-nginx-runner/icon.png"
+  icon: "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/com.leopersan.static-nginx-runner/icon.png"
+  thumbnail: "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/com.leopersan.static-nginx-runner/icon.png"
   title:
     en_us: "Static & SPA Nginx Runner"
+    pt_br: "Static & SPA Nginx Runner"
   category: "Utilities"
   port_map: "80"
   index: /

@@ -77,6 +77,7 @@ volumes:
   nodejs_git_runner_data:
 
 x-casaos:
+  id: com.leopersan.nodejs-git-runner
   architectures:
     - amd64
     - arm64
@@ -90,10 +91,11 @@ x-casaos:
     pt_br: "Node.js 24 Git Runner Runner"
   developer: "Private Market Admin"
   author: "Private Market Admin"
-  icon: "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/nodejs-git-runner/icon.png"
-  thumbnail: "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/nodejs-git-runner/icon.png"
+  icon: "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/com.leopersan.nodejs-git-runner/icon.png"
+  thumbnail: "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/com.leopersan.nodejs-git-runner/icon.png"
   title:
     en_us: "Node.js 24 Git Runner"
+    pt_br: "Node.js 24 Git Runner"
   category: "Development"
   port_map: "3000"
   index: /

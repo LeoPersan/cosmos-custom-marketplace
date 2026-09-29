@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "store_id": "com.leopersan.cosmos-custom-marketplace",
+  "name": "Custom Git Runners Store",
+  "description": "Deploy contínuo via Git para Node.js, Python, Golang, PHP, Rust e Nginx SPA no Cosmos-Server e ZimaOS / CasaOS.",
+  "maintainer": "Private Market Admin",
+  "url": "https://github.com/LeoPersan/cosmos-custom-marketplace"
+}

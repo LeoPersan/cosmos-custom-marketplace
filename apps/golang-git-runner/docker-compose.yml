@@ -96,6 +96,7 @@ volumes:
   golang_git_runner_data:
 
 x-casaos:
+  id: com.leopersan.golang-git-runner
   architectures:
     - amd64
     - arm64
@@ -109,10 +110,11 @@ x-casaos:
     pt_br: "Golang 1.24 Git Runner Runner"
   developer: "Private Market Admin"
   author: "Private Market Admin"
-  icon: "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/golang-git-runner/icon.png"
-  thumbnail: "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/golang-git-runner/icon.png"
+  icon: "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/com.leopersan.golang-git-runner/icon.png"
+  thumbnail: "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/com.leopersan.golang-git-runner/icon.png"
   title:
     en_us: "Golang 1.24 Git Runner"
+    pt_br: "Golang 1.24 Git Runner"
   category: "Development"
   port_map: "8080"
   index: /

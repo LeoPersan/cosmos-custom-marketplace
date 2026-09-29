@@ -1,5 +1,5 @@
 {
-  "id": "rust-git-runner",
+  "id": "com.leopersan.rust-git-runner",
   "title": "Rust Git Runner",
   "tagline": "Compilação otimizada (`cargo build --release`) e execução de binários web em Rust (Axum, Actix-web, Rocket) com cache de crates Cargo e proxy Cosmos.",
   "description": "O **Rust Git Runner** oferece um ambiente moderno com Rust e Cargo. Mantém cache persistente dos pacotes baixados em `{VOLUME_ROOT}/cargo`, clona/atualiza o repositório Git, realiza a compilação do binário release e inicializa o servidor de alta performance integrado ao Smart Shield do Cosmos.",
@@ -9,9 +9,9 @@
   ],
   "author": "Private Market Admin",
   "developer": "Private Market Admin",
-  "icon": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/rust-git-runner/icon.png",
-  "thumbnail": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/rust-git-runner/icon.png",
-  "compose_url": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/rust-git-runner/docker-compose.yml",
+  "icon": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/com.leopersan.rust-git-runner/icon.png",
+  "thumbnail": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/com.leopersan.rust-git-runner/icon.png",
+  "compose_url": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/com.leopersan.rust-git-runner/docker-compose.yml",
   "base_url": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main",
   "version": "1.0.0",
   "architectures": [
