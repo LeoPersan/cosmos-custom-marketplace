@@ -1,0 +1,6 @@
+[
+  "golang-git-runner",
+  "nodejs-git-runner",
+  "python-git-runner",
+  "static-nginx-runner"
+]

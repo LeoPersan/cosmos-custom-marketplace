@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "name": "Development",
+    "description": "Runtimes de desenvolvimento, APIs, compiladores e runners Git de CI/CD."
+  },
+  {
+    "id": 2,
+    "name": "Utilities",
+    "description": "Servidores web estáticos, proxies e ferramentas auxiliares."
+  }
+]

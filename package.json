@@ -1,7 +1,7 @@
 {
   "name": "cosmos-custom-marketplace",
-  "version": "1.0.0",
-  "description": "Custom Private Market Source for Cosmos-Server (Cosmos Cloud)",
+  "version": "1.1.0",
+  "description": "Unified Custom Market Source & App Store for Cosmos-Server and ZimaOS / CasaOS",
   "type": "module",
   "scripts": {
     "build": "node build.js",
@@ -10,7 +10,10 @@
   "keywords": [
     "cosmos",
     "cosmos-server",
+    "zimaos",
+    "casaos",
     "marketplace",
+    "appstore",
     "servapps",
     "docker",
     "self-hosted"
