@@ -16,6 +16,46 @@ Atua como uma **Market Source** customizada e **Community App Store**, fornecend
 | ![Nginx](Apps/static-nginx-runner/icon.png) | **Static & SPA Nginx Runner** | `nginx:alpine` | `80` | SPAs (React, Vue, Vite, Svelte, Angular) e sites estáticos com roteamento SPA `try_files`. |
 | ![PHP](Apps/php-laravel-runner/icon.png) | **PHP 8.4 & Laravel Runner** | `php:8.4-apache` | `80` | Laravel, Symfony, WordPress, Composer e Apache com suporte a `.htaccess`. |
 | ![Rust](Apps/rust-git-runner/icon.png) | **Rust Git Runner** | `rust:alpine` | `8080` | Actix-web, Axum, Rocket com compilação release otimizada (`cargo build --release`). |
+| ![MySQL](Apps/mysql-shared-server/icon.png) | **MySQL 8.4 Shared Server** | `mysql:8.4` | `3306` | Servidor MySQL 8.4 LTS limpo e otimizado com provisionamento automático de múltiplos bancos e usuários para homelabs. |
+
+---
+
+## 🐬 Servidor MySQL Compartilhado & Conexão Multi-Container
+
+O **MySQL 8.4 Shared Server** foi desenvolvido para centralizar o armazenamento de dados de múltiplos containers em execução no mesmo servidor homelab, eliminando o consumo redundante de memória de subir bancos separados para cada projeto.
+
+### ⚙️ Parâmetros do MySQL Server
+
+| Variável | Tipo | Padrão | Descrição |
+| :--- | :--- | :--- | :--- |
+| `MYSQL_ROOT_PASSWORD` | Senha | — | Senha administrativa do superusuário root (*obrigatória*). |
+| `MYSQL_DATABASE` | Texto | `app_db` | Nome do primeiro banco de dados criado no bootstrap. |
+| `MYSQL_USER` | Texto | `app_user` | Nome do usuário de aplicação inicial. |
+| `MYSQL_PASSWORD` | Senha | `app_secret` | Senha do usuário de aplicação inicial. |
+| `ADDITIONAL_DATABASES` | CSV | `""` | Lista de bancos adicionais a serem criados (ex.: `loja_db,blog_db`). |
+| `ADDITIONAL_USERS` | CSV | `""` | Pares `usuario:senha:banco` para provisionamento automático (ex.: `loja_user:loja_pass:loja_db`). |
+
+### 🔗 Como Conectar Runners PHP, Node.js e Python ao MySQL
+
+Na mesma rede Docker (Cosmos ou ZimaOS), os containers conseguem se comunicar diretamente através do hostname do container de banco de dados na porta interna `3306`:
+
+#### 1. Configuração em Aplicações PHP / Laravel (`.env` ou `BUILD_CMD`):
+```env
+DB_CONNECTION=mysql
+DB_HOST=mysql-shared-server
+DB_PORT=3306
+DB_DATABASE=app_db
+DB_USERNAME=app_user
+DB_PASSWORD=app_secret
+```
+
+#### 2. Provisionamento Declarativo para Múltiplos Projetos:
+Caso queira atender dois projetos distintos (ex.: um E-Commerce e um Blog) no mesmo MySQL:
+- Defina no formulário do MySQL Server:
+  - `ADDITIONAL_DATABASES`: `loja_db, blog_db`
+  - `ADDITIONAL_USERS`: `loja_user:loja_secret:loja_db, blog_user:blog_secret:blog_db`
+- No projeto **E-Commerce**: use `DB_HOST=mysql-shared-server`, `DB_DATABASE=loja_db`, `DB_USERNAME=loja_user`.
+- No projeto **Blog**: use `DB_HOST=mysql-shared-server`, `DB_DATABASE=blog_db`, `DB_USERNAME=blog_user`.
 
 ---
 
@@ -45,7 +85,7 @@ Atua como uma **Market Source** customizada e **Community App Store**, fornecend
    https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/store.json
    ```
 6. Clique em **Salvar** / **Submit**.
-7. Todos os runners aparecerão catalogados nas categorias *Development* e *Utilities*, prontos para deploy com formulário de configuração visual.
+7. Todos os runners aparecerão catalogados nas categorias *Development*, *Utilities* e *Database*, prontos para deploy com formulário de configuração visual.
 
 > 💡 **Dica (Instalação Avulsa)**: Caso queira instalar um runner avulso sem adicionar a loja inteira, você pode utilizar o botão **Custom Install** na App Store do ZimaOS e colar o conteúdo de qualquer arquivo [`Apps/<app>/docker-compose.yml`](Apps/).
 
@@ -139,7 +179,7 @@ npm test
 A suíte de testes verifica:
 - Conformidade dos schemas Cosmos (`index.json`, `servapps.json`, `cosmos-compose.json`).
 - Conformidade dos schemas ZimaOS (`store.json`, `category-list.json`, `docker-compose.yml` com `x-casaos`).
-- Paridade de 100% dos 6 runners em ambos os ecossistemas.
+- Paridade de 100% de todas as 7 aplicações em ambos os ecossistemas.
 - Integridade física de todos os ícones e arquivos referenciados.
 
 ---
