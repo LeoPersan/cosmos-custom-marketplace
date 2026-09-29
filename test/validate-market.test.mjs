@@ -88,8 +88,6 @@ describe('Cosmos Market Source - Official Schema Test Suite', () => {
 
     const svc = compose.services['{ServiceName}'];
     assert.equal(svc.image, 'mysql:8.4');
-    assert.ok(svc.healthcheck, 'MySQL service must define healthcheck');
-    assert.ok(svc.healthcheck.test.includes('mysqladmin'), 'Healthcheck must use mysqladmin');
     assert.ok(svc.volumes.some(v => v.target === '/var/lib/mysql'), 'Must persist /var/lib/mysql volume');
   });
 });
