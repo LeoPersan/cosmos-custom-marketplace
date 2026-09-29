@@ -115,4 +115,4 @@ x-casaos:
     pt_br: "PHP 8.4 & Laravel Runner"
   category: "Development"
   port_map: "80"
-  index: /
+  index: "/"

@@ -87,6 +87,82 @@
     "compose": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/servapps/golang-git-runner/cosmos-compose.json"
   },
   {
+    "name": "MySQL 8.4 Server",
+    "description": "Servidor MySQL 8.4 LTS limpo e otimizado com provisionamento automático de múltiplos bancos e usuários para homelabs.",
+    "long_description": "O **Servidor MySQL 8.4 Shared Server** fornece uma instância centralizada de banco de dados relacional de alta performance para ser compartilhada entre múltiplos containers (projetos PHP/Laravel, Node.js, Python, WordPress). Inclui inicialização otimizada (utf8mb4, skip-name-resolve, buffer pool de 256MB), healthcheck nativo e suporte a provisionamento declarativo de múltiplos bancos e usuários via variáveis de ambiente.",
+    "author": "Private Market Admin",
+    "category": "Database",
+    "tags": [
+      "mysql",
+      "database",
+      "sql",
+      "relational",
+      "storage"
+    ],
+    "params": [
+      {
+        "name": "MYSQL_ROOT_PASSWORD",
+        "label": "Senha do Administrador (Root)",
+        "type": "password",
+        "default": "",
+        "placeholder": "Defina uma senha forte para o root",
+        "description": "Senha de superusuário administrativo do MySQL."
+      },
+      {
+        "name": "MYSQL_DATABASE",
+        "label": "Banco de Dados Inicial",
+        "type": "text",
+        "default": "app_db",
+        "placeholder": "app_db",
+        "description": "Nome do primeiro schema/banco de dados criado automaticamente no bootstrap."
+      },
+      {
+        "name": "MYSQL_USER",
+        "label": "Usuário da Aplicação",
+        "type": "text",
+        "default": "app_user",
+        "placeholder": "app_user",
+        "description": "Nome do usuário inicial com permissões no banco de dados."
+      },
+      {
+        "name": "MYSQL_PASSWORD",
+        "label": "Senha do Usuário",
+        "type": "password",
+        "default": "app_secret",
+        "placeholder": "app_secret",
+        "description": "Senha do usuário da aplicação inicial."
+      },
+      {
+        "name": "ADDITIONAL_DATABASES",
+        "label": "Bancos de Dados Adicionais (CSV)",
+        "type": "text",
+        "default": "",
+        "placeholder": "loja_db, blog_db, financeiro_db",
+        "description": "Lista separada por vírgulas de bancos adicionais a serem criados automaticamente."
+      },
+      {
+        "name": "ADDITIONAL_USERS",
+        "label": "Usuários Adicionais (CSV: usuario:senha:banco)",
+        "type": "text",
+        "default": "",
+        "placeholder": "loja_user:loja_pass:loja_db, blog_user:blog_pass:blog_db",
+        "description": "Pares de usuario:senha:banco separados por vírgula para provisionamento automático."
+      }
+    ],
+    "id": "mysql-shared-server",
+    "longDescription": "O **Servidor MySQL 8.4 Shared Server** fornece uma instância centralizada de banco de dados relacional de alta performance para ser compartilhada entre múltiplos containers (projetos PHP/Laravel, Node.js, Python, WordPress). Inclui inicialização otimizada (utf8mb4, skip-name-resolve, buffer pool de 256MB), healthcheck nativo e suporte a provisionamento declarativo de múltiplos bancos e usuários via variáveis de ambiente.",
+    "repository": "https://github.com/LeoPersan/cosmos-custom-marketplace",
+    "supported_architectures": [
+      "amd64",
+      "arm64",
+      "arm"
+    ],
+    "screenshots": [],
+    "artefacts": {},
+    "icon": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/servapps/mysql-shared-server/icon.png",
+    "compose": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/servapps/mysql-shared-server/cosmos-compose.json"
+  },
+  {
     "name": "Node.js 24 Git Runner",
     "description": "Deploy contínuo e execução automatizada de aplicações Node.js 24 / TypeScript / SSR / APIs a partir de repositório Git com persistência em volume e proxy reverso Cosmos.",
     "long_description": "O **Node.js 24 Git Runner** permite conectar qualquer repositório Git (público ou privado via GitHub Token), instalar dependências com npm/yarn/pnpm, executar builds (Next.js, Remix, Astro, NestJS, Express, Fastify) e servir a aplicação com Smart Shield e certificados SSL automáticos gerenciados pelo Cosmos-Server.",

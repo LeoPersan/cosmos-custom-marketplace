@@ -1,5 +1,6 @@
 [
   "com.leopersan.golang-git-runner",
+  "com.leopersan.mysql-shared-server",
   "com.leopersan.nodejs-git-runner",
   "com.leopersan.python-git-runner",
   "com.leopersan.static-nginx-runner"

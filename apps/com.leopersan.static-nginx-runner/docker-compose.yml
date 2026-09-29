@@ -130,4 +130,4 @@ x-casaos:
     pt_br: "Static & SPA Nginx Runner"
   category: "Utilities"
   port_map: "80"
-  index: /
+  index: "/"

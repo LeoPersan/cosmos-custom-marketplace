@@ -1,7 +1,7 @@
 {
   "id": "com.leopersan.rust-git-runner",
   "title": "Rust Git Runner",
-  "tagline": "Compilação otimizada (`cargo build --release`) e execução de binários web em Rust (Axum, Actix-web, Rocket) com cache de crates Cargo e proxy Cosmos.",
+  "tagline": "Rust Git Runner Runner",
   "description": "O **Rust Git Runner** oferece um ambiente moderno com Rust e Cargo. Mantém cache persistente dos pacotes baixados em `{VOLUME_ROOT}/cargo`, clona/atualiza o repositório Git, realiza a compilação do binário release e inicializa o servidor de alta performance integrado ao Smart Shield do Cosmos.",
   "category": "Development",
   "categories": [

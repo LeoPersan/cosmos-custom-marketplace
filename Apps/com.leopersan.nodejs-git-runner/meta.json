@@ -1,7 +1,7 @@
 {
   "id": "com.leopersan.nodejs-git-runner",
   "title": "Node.js 24 Git Runner",
-  "tagline": "Deploy contínuo e execução automatizada de aplicações Node.js 24 / TypeScript / SSR / APIs a partir de repositório Git com persistência em volume e proxy reverso Cosmos.",
+  "tagline": "Node.js 24 Git Runner Runner",
   "description": "O **Node.js 24 Git Runner** permite conectar qualquer repositório Git (público ou privado via GitHub Token), instalar dependências com npm/yarn/pnpm, executar builds (Next.js, Remix, Astro, NestJS, Express, Fastify) e servir a aplicação com Smart Shield e certificados SSL automáticos gerenciados pelo Cosmos-Server.",
   "category": "Development",
   "categories": [

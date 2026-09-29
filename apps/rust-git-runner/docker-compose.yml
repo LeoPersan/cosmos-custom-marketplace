@@ -121,4 +121,4 @@ x-casaos:
     pt_br: "Rust Git Runner"
   category: "Development"
   port_map: "8080"
-  index: /
+  index: "/"

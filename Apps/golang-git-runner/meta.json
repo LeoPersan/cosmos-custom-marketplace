@@ -1,7 +1,7 @@
 {
   "id": "com.leopersan.golang-git-runner",
   "title": "Golang 1.24 Git Runner",
-  "tagline": "Compilação e execução automatizada de microserviços e APIs em Golang 1.24 com cache de módulos e proxy Cosmos.",
+  "tagline": "Golang 1.24 Git Runner Runner",
   "description": "O **Golang 1.24 Git Runner** realiza o download automático de dependências (`go mod download`), a compilação do binário da aplicação (`go build`) e a execução do serviço com alta performance e baixo consumo de recursos, integrado com o Smart Shield do Cosmos-Server.",
   "category": "Development",
   "categories": [

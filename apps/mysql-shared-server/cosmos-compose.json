@@ -1,0 +1,91 @@
+{
+  "cosmos-installer": {
+    "form": [
+      {
+        "name": "MYSQL_ROOT_PASSWORD",
+        "label": "Root Password",
+        "initialValue": "",
+        "type": "password"
+      },
+      {
+        "name": "MYSQL_DATABASE",
+        "label": "Initial Database Name",
+        "initialValue": "app_db",
+        "type": "text"
+      },
+      {
+        "name": "MYSQL_USER",
+        "label": "Initial User Name",
+        "initialValue": "app_user",
+        "type": "text"
+      },
+      {
+        "name": "MYSQL_PASSWORD",
+        "label": "Initial User Password",
+        "initialValue": "app_secret",
+        "type": "password"
+      },
+      {
+        "name": "ADDITIONAL_DATABASES",
+        "label": "Additional Databases (comma-separated)",
+        "initialValue": "",
+        "type": "text"
+      },
+      {
+        "name": "ADDITIONAL_USERS",
+        "label": "Additional Users (user:pass:db, comma-separated)",
+        "initialValue": "",
+        "type": "text"
+      }
+    ]
+  },
+  "minVersion": "0.8.0",
+  "services": {
+    "{ServiceName}": {
+      "image": "mysql:8.4",
+      "container_name": "{ServiceName}",
+      "restart": "unless-stopped",
+      "labels": {
+        "cosmos-force-network-secured": "true",
+        "cosmos-auto-update": "true",
+        "cosmos-stack": "{ServiceName}",
+        "cosmos-stack-main": "{ServiceName}",
+        "cosmos-persistent-env": "MYSQL_ROOT_PASSWORD, MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD, ADDITIONAL_DATABASES, ADDITIONAL_USERS"
+      },
+      "environment": [
+        "MYSQL_ROOT_PASSWORD={Context.MYSQL_ROOT_PASSWORD}",
+        "MYSQL_DATABASE={Context.MYSQL_DATABASE}",
+        "MYSQL_USER={Context.MYSQL_USER}",
+        "MYSQL_PASSWORD={Context.MYSQL_PASSWORD}",
+        "ADDITIONAL_DATABASES={Context.ADDITIONAL_DATABASES}",
+        "ADDITIONAL_USERS={Context.ADDITIONAL_USERS}",
+        "APP_PORT=3306",
+        "PORT=3306"
+      ],
+      "volumes": [
+        {
+          "source": "{ServiceName}-data",
+          "target": "/var/lib/mysql",
+          "type": "volume"
+        }
+      ],
+      "command": "sh -c echo$IFS\"bWtkaXIgLXAgL2RvY2tlci1lbnRyeXBvaW50LWluaXRkYi5kCmNhdCA8PCAiSU5JVF9FT0YiID4gL2RvY2tlci1lbnRyeXBvaW50LWluaXRkYi5kLzAxLWluaXQtbXVsdGlwbGUtZGJzLXVzZXJzLnNoCiMhL2Jpbi9iYXNoCnNldCAtZQoKaWYgWyAtbiAiJEFERElUSU9OQUxfREFUQUJBU0VTIiBdOyB0aGVuCiAgSUZTPSIsIiByZWFkIC1yYSBEQlMgPDw8ICIkQURESVRJT05BTF9EQVRBQkFTRVMiCiAgZm9yIGRiIGluICIke0RCU1tAXX0iOyBkbwogICAgZGJfY2xlYW49JChlY2hvICIkZGIiIHwgeGFyZ3MpCiAgICBpZiBbIC1uICIkZGJfY2xlYW4iIF07IHRoZW4KICAgICAgZWNobyAiW015U1FMIEluaXRdIENyaWFuZG8gYmFuY28gZGUgZGFkb3MgYWRpY2lvbmFsOiAkZGJfY2xlYW4iCiAgICAgIG15c3FsIC11IHJvb3QgLXAiJE1ZU1FMX1JPT1RfUEFTU1dPUkQiIC1lICJDUkVBVEUgREFUQUJBU0UgSUYgTk9UIEVYSVNUUyBcYCRkYl9jbGVhblxgIENIQVJBQ1RFUiBTRVQgdXRmOG1iNCBDT0xMQVRFIHV0ZjhtYjRfdW5pY29kZV9jaTsiCiAgICBmaQogIGRvbmUKZmkKCmlmIFsgLW4gIiRBRERJVElPTkFMX1VTRVJTIiBdOyB0aGVuCiAgSUZTPSIsIiByZWFkIC1yYSBVU0VSUyA8PDwgIiRBRERJVElPTkFMX1VTRVJTIgogIGZvciBpdGVtIGluICIke1VTRVJTW0BdfSI7IGRvCiAgICBpdGVtX2NsZWFuPSQoZWNobyAiJGl0ZW0iIHwgeGFyZ3MpCiAgICBpZiBbIC1uICIkaXRlbV9jbGVhbiIgXTsgdGhlbgogICAgICB1X25hbWU9JChlY2hvICIkaXRlbV9jbGVhbiIgfCBjdXQgLWQiOiIgLWYxKQogICAgICB1X3Bhc3M9JChlY2hvICIkaXRlbV9jbGVhbiIgfCBjdXQgLWQiOiIgLWYyKQogICAgICB1X2RiPSQoZWNobyAiJGl0ZW1fY2xlYW4iIHwgY3V0IC1kIjoiIC1mMykKICAgICAgaWYgWyAtbiAiJHVfbmFtZSIgXSAmJiBbIC1uICIkdV9wYXNzIiBdOyB0aGVuCiAgICAgICAgZWNobyAiW015U1FMIEluaXRdIENyaWFuZG8gdXN1YXJpbzogJHVfbmFtZSIKICAgICAgICBteXNxbCAtdSByb290IC1wIiRNWVNRTF9ST09UX1BBU1NXT1JEIiAtZSAiQ1JFQVRFIFVTRVIgSUYgTk9UIEVYSVNUUyAnJHVfbmFtZSdAJyUnIElERU5USUZJRUQgQlkgJyR1X3Bhc3MnOyIKICAgICAgICBpZiBbIC1uICIkdV9kYiIgXTsgdGhlbgogICAgICAgICAgZWNobyAiW015U1FMIEluaXRdIENvbmNlZGVuZG8gcHJpdmlsZWdpb3MgcGFyYSAkdV9uYW1lIG5vIGJhbmNvICR1X2RiIgogICAgICAgICAgbXlzcWwgLXUgcm9vdCAtcCIkTVlTUUxfUk9PVF9QQVNTV09SRCIgLWUgIkNSRUFURSBEQVRBQkFTRSBJRiBOT1QgRVhJU1RTIFxgJHVfZGJcYCBDSEFSQUNURVIgU0VUIHV0ZjhtYjQgQ09MTEFURSB1dGY4bWI0X3VuaWNvZGVfY2k7IEdSQU5UIEFMTCBQUklWSUxFR0VTIE9OIFxgJHVfZGJcYC4qIFRPICckdV9uYW1lJ0AnJSc7IgogICAgICAgIGVsc2UKICAgICAgICAgIGVjaG8gIltNeVNRTCBJbml0XSBDb25jZWRlbmRvIHByaXZpbGVnaW9zIGdlcmFpcyBwYXJhICR1X25hbWUiCiAgICAgICAgICBteXNxbCAtdSByb290IC1wIiRNWVNRTF9ST09UX1BBU1NXT1JEIiAtZSAiR1JBTlQgQUxMIFBSSVZJTEVHRVMgT04gKi4qIFRPICckdV9uYW1lJ0AnJSc7IgogICAgICAgIGZpCiAgICAgIGZpCiAgICBmaQogIGRvbmUKICBteXNxbCAtdSByb290IC1wIiRNWVNRTF9ST09UX1BBU1NXT1JEIiAtZSAiRkxVU0ggUFJJVklMRUdFUzsiCmZpCklOSVRfRU9GCmNobW9kICt4IC9kb2NrZXItZW50cnlwb2ludC1pbml0ZGIuZC8wMS1pbml0LW11bHRpcGxlLWRicy11c2Vycy5zaAplY2hvICJbTXlTUUwgU2hhcmVkIFNlcnZlcl0gSW5pY2lhbGl6YW5kbyBNeVNRTCA4LjQgTFRTIGNvbSBjb25maWd1cmFjb2VzIG90aW1pemFkYXMuLi4iCmV4ZWMgZG9ja2VyLWVudHJ5cG9pbnQuc2ggbXlzcWxkIC0tY2hhcmFjdGVyLXNldC1zZXJ2ZXI9dXRmOG1iNCAtLWNvbGxhdGlvbi1zZXJ2ZXI9dXRmOG1iNF91bmljb2RlX2NpIC0tc2tpcC1uYW1lLXJlc29sdmUgLS1pbm5vZGItYnVmZmVyLXBvb2wtc2l6ZT0yNTZNIC0taW5ub2RiLWxvZy1maWxlLXNpemU9NjRNIC0tbWF4LWNvbm5lY3Rpb25zPTE1MA==\"|base64$IFS-d|sh",
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "root",
+          "-p$MYSQL_ROOT_PASSWORD"
+        ],
+        "interval": "10s",
+        "timeout": "5s",
+        "retries": 5,
+        "start_period": "30s"
+      }
+    }
+  }
+}

@@ -97,11 +97,14 @@ for (const folder of appFolders) {
   }
 
   // Determine Category
-  const category = folder.includes('static') || (desc.category && desc.category.toLowerCase().includes('utilities'))
-    ? 'Utilities'
-    : 'Development';
+  let category = 'Development';
+  if (desc.category && desc.category.toLowerCase().includes('database')) {
+    category = 'Database';
+  } else if (folder.includes('static') || (desc.category && desc.category.toLowerCase().includes('utilities'))) {
+    category = 'Utilities';
+  }
 
-  if (folder.includes('nodejs') || folder.includes('python') || folder.includes('golang') || folder.includes('static')) {
+  if (folder.includes('nodejs') || folder.includes('python') || folder.includes('golang') || folder.includes('static') || folder.includes('mysql')) {
     recommendList.push(zimaAppId);
   }
 
@@ -116,20 +119,38 @@ for (const folder of appFolders) {
     .map(line => `        ${line}`)
     .join('\n');
 
+  const isDatabase = category === 'Database' || folder.includes('mysql');
+  const volumePath = isDatabase ? '/var/lib/mysql' : '/app';
+  const workingDirBlock = isDatabase ? '' : '    working_dir: /app\n';
+  
+  const healthcheckBlock = isDatabase ? `    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p\${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+` : '';
+
+  const portsBlock = isDatabase ? `    expose:
+      - "${appPort}"` : `    ports:
+      - "${appPort}:${appPort}"`;
+
+  const tagline = isDatabase
+    ? desc.description
+    : `${(desc.name || folder)} Runner`;
+
   const dockerComposeYaml = `name: ${folder}
 services:
   app:
     image: ${image}
     container_name: ${folder}
     restart: unless-stopped
-    working_dir: /app
-    environment:
+${workingDirBlock}    environment:
 ${envYamlLines}
-    ports:
-      - "${appPort}:${appPort}"
+${portsBlock}
     volumes:
-      - ${folder.replace(/-/g, '_')}_data:/app
-    command: >
+      - ${folder.replace(/-/g, '_')}_data:${volumePath}
+${healthcheckBlock}    command: >
       sh -c '
 ${indentedScript}
       '
@@ -148,8 +169,8 @@ x-casaos:
     en_us: "${desc.description.replace(/"/g, '\\"')}"
     pt_br: "${desc.description.replace(/"/g, '\\"')}"
   tagline:
-    en_us: "${(desc.name || folder)} Runner"
-    pt_br: "${(desc.name || folder)} Runner"
+    en_us: "${tagline.replace(/"/g, '\\"')}"
+    pt_br: "${tagline.replace(/"/g, '\\"')}"
   developer: "${desc.author || 'Private Market Admin'}"
   author: "${desc.author || 'Private Market Admin'}"
   icon: "${REPO_BASE_URL}/Apps/${zimaAppId}/icon.png"
@@ -158,14 +179,14 @@ x-casaos:
     en_us: "${desc.name || folder}"
     pt_br: "${desc.name || folder}"
   category: "${category}"
-  port_map: "${appPort}"
-  index: /
+  port_map: "${isDatabase ? '' : appPort}"
+  index: "${isDatabase ? '' : '/'}"
 `;
 
   const metaJsonContent = {
     id: zimaAppId,
     title: desc.name || folder,
-    tagline: desc.description || `${desc.name} Runner`,
+    tagline: isDatabase ? desc.description : `${desc.name} Runner`,
     description: desc.long_description || desc.description,
     category: category,
     categories: [category.toLowerCase()],
@@ -212,7 +233,7 @@ x-casaos:
   zimaAppsList.push({
     id: zimaAppId,
     title: desc.name || folder,
-    tagline: desc.description || `${desc.name} Runner`,
+    tagline: isDatabase ? desc.description : `${desc.name} Runner`,
     category: category,
     categories: [category.toLowerCase()],
     author: desc.author || 'Private Market Admin',
@@ -248,16 +269,16 @@ fs.writeFileSync(path.join(__dirname, 'index.pt_BR.json'), JSON.stringify(indexC
 const storeContent = {
   version: 2,
   store_id: 'com.leopersan.cosmos-custom-marketplace',
-  name: 'Custom Git Runners Store',
-  description: 'Deploy contínuo via Git para Node.js, Python, Golang, PHP, Rust e Nginx SPA no Cosmos-Server e ZimaOS / CasaOS.',
+  name: 'Custom Git Runners & Database Store',
+  description: 'Deploy contínuo via Git para Node.js, Python, Golang, PHP, Rust, Nginx SPA e Servidor MySQL Compartilhado no Cosmos-Server e ZimaOS / CasaOS.',
   maintainer: 'Private Market Admin',
   url: 'https://github.com/LeoPersan/cosmos-custom-marketplace'
 };
 
 const storeConfigContent = {
   store_id: 'com.leopersan.cosmos-custom-marketplace',
-  name: 'Custom Git Runners Store',
-  description: 'Deploy contínuo via Git para Node.js, Python, Golang, PHP, Rust e Nginx SPA no Cosmos-Server e ZimaOS / CasaOS.',
+  name: 'Custom Git Runners & Database Store',
+  description: 'Deploy contínuo via Git para Node.js, Python, Golang, PHP, Rust, Nginx SPA e Servidor MySQL Compartilhado no Cosmos-Server e ZimaOS / CasaOS.',
   maintainer: 'Private Market Admin',
   url: 'https://github.com/LeoPersan/cosmos-custom-marketplace'
 };
@@ -274,6 +295,11 @@ const categoryListContent = [
     id: 2,
     name: 'Utilities',
     description: 'Servidores web estáticos, proxies e ferramentas auxiliares.'
+  },
+  {
+    id: 3,
+    name: 'Database',
+    description: 'Servidores de banco de dados relacionais e NoSQL compartilhados.'
   }
 ];
 

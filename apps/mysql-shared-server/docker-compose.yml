@@ -1,0 +1,98 @@
+name: mysql-shared-server
+services:
+  app:
+    image: mysql:8.4
+    container_name: mysql-shared-server
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=
+      - MYSQL_DATABASE=app_db
+      - MYSQL_USER=app_user
+      - MYSQL_PASSWORD=app_secret
+      - ADDITIONAL_DATABASES=
+      - ADDITIONAL_USERS=
+      - APP_PORT=3306
+      - PORT=3306
+    expose:
+      - "3306"
+    volumes:
+      - mysql_shared_server_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    command: >
+      sh -c '
+        mkdir -p /docker-entrypoint-initdb.d
+        cat << "INIT_EOF" > /docker-entrypoint-initdb.d/01-init-multiple-dbs-users.sh
+        #!/bin/bash
+        set -e
+        
+        if [ -n "$$ADDITIONAL_DATABASES" ]; then
+          IFS="," read -ra DBS <<< "$$ADDITIONAL_DATABASES"
+          for db in "$${DBS[@]}"; do
+            db_clean=$$(echo "$$db" | xargs)
+            if [ -n "$$db_clean" ]; then
+              echo "[MySQL Init] Criando banco de dados adicional: $$db_clean"
+              mysql -u root -p"$$MYSQL_ROOT_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS \`$$db_clean\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+            fi
+          done
+        fi
+        
+        if [ -n "$$ADDITIONAL_USERS" ]; then
+          IFS="," read -ra USERS <<< "$$ADDITIONAL_USERS"
+          for item in "$${USERS[@]}"; do
+            item_clean=$$(echo "$$item" | xargs)
+            if [ -n "$$item_clean" ]; then
+              u_name=$$(echo "$$item_clean" | cut -d":" -f1)
+              u_pass=$$(echo "$$item_clean" | cut -d":" -f2)
+              u_db=$$(echo "$$item_clean" | cut -d":" -f3)
+              if [ -n "$$u_name" ] && [ -n "$$u_pass" ]; then
+                echo "[MySQL Init] Criando usuario: $$u_name"
+                mysql -u root -p"$$MYSQL_ROOT_PASSWORD" -e "CREATE USER IF NOT EXISTS '$$u_name'@'%' IDENTIFIED BY '$$u_pass';"
+                if [ -n "$$u_db" ]; then
+                  echo "[MySQL Init] Concedendo privilegios para $$u_name no banco $$u_db"
+                  mysql -u root -p"$$MYSQL_ROOT_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS \`$$u_db\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; GRANT ALL PRIVILEGES ON \`$$u_db\`.* TO '$$u_name'@'%';"
+                else
+                  echo "[MySQL Init] Concedendo privilegios gerais para $$u_name"
+                  mysql -u root -p"$$MYSQL_ROOT_PASSWORD" -e "GRANT ALL PRIVILEGES ON *.* TO '$$u_name'@'%';"
+                fi
+              fi
+            fi
+          done
+          mysql -u root -p"$$MYSQL_ROOT_PASSWORD" -e "FLUSH PRIVILEGES;"
+        fi
+        INIT_EOF
+        chmod +x /docker-entrypoint-initdb.d/01-init-multiple-dbs-users.sh
+        echo "[MySQL Shared Server] Inicializando MySQL 8.4 LTS com configuracoes otimizadas..."
+        exec docker-entrypoint.sh mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --skip-name-resolve --innodb-buffer-pool-size=256M --innodb-log-file-size=64M --max-connections=150
+      '
+
+volumes:
+  mysql_shared_server_data:
+
+x-casaos:
+  id: com.leopersan.mysql-shared-server
+  architectures:
+    - amd64
+    - arm64
+    - arm
+  main: app
+  description:
+    en_us: "Servidor MySQL 8.4 LTS limpo e otimizado com provisionamento automático de múltiplos bancos e usuários para homelabs."
+    pt_br: "Servidor MySQL 8.4 LTS limpo e otimizado com provisionamento automático de múltiplos bancos e usuários para homelabs."
+  tagline:
+    en_us: "Servidor MySQL 8.4 LTS limpo e otimizado com provisionamento automático de múltiplos bancos e usuários para homelabs."
+    pt_br: "Servidor MySQL 8.4 LTS limpo e otimizado com provisionamento automático de múltiplos bancos e usuários para homelabs."
+  developer: "Private Market Admin"
+  author: "Private Market Admin"
+  icon: "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/com.leopersan.mysql-shared-server/icon.png"
+  thumbnail: "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/com.leopersan.mysql-shared-server/icon.png"
+  title:
+    en_us: "MySQL 8.4 Server"
+    pt_br: "MySQL 8.4 Server"
+  category: "Database"
+  port_map: ""
+  index: ""

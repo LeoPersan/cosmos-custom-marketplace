@@ -117,4 +117,4 @@ x-casaos:
     pt_br: "Golang 1.24 Git Runner"
   category: "Development"
   port_map: "8080"
-  index: /
+  index: "/"

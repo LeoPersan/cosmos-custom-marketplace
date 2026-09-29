@@ -110,4 +110,4 @@ x-casaos:
     pt_br: "Python 3.13 Git Runner"
   category: "Development"
   port_map: "8000"
-  index: /
+  index: "/"

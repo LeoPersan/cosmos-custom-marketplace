@@ -1,7 +1,7 @@
 {
   "id": "com.leopersan.static-nginx-runner",
   "title": "Static & SPA Nginx Runner",
-  "tagline": "Deploy automatizado de sites estáticos e SPAs (React, Vue, Vite, Svelte, Astro, Angular) com Nginx de alta performance e roteamento SPA integrado.",
+  "tagline": "Static & SPA Nginx Runner Runner",
   "description": "O **Static & SPA Nginx Runner** clona seu repositório de frontend, executa os passos de build (`npm run build` ou similar) e disponibiliza os assets estáticos através de um servidor Nginx Alpine otimizado com suporte nativo a `try_files` para Single Page Applications (evitando erros 404 em rotas de navegação client-side).",
   "category": "Utilities",
   "categories": [

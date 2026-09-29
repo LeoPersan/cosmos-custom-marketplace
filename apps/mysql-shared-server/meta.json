@@ -1,0 +1,27 @@
+{
+  "id": "com.leopersan.mysql-shared-server",
+  "title": "MySQL 8.4 Server",
+  "tagline": "Servidor MySQL 8.4 LTS limpo e otimizado com provisionamento automático de múltiplos bancos e usuários para homelabs.",
+  "description": "O **Servidor MySQL 8.4 Shared Server** fornece uma instância centralizada de banco de dados relacional de alta performance para ser compartilhada entre múltiplos containers (projetos PHP/Laravel, Node.js, Python, WordPress). Inclui inicialização otimizada (utf8mb4, skip-name-resolve, buffer pool de 256MB), healthcheck nativo e suporte a provisionamento declarativo de múltiplos bancos e usuários via variáveis de ambiente.",
+  "category": "Database",
+  "categories": [
+    "database"
+  ],
+  "author": "Private Market Admin",
+  "developer": "Private Market Admin",
+  "icon": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/com.leopersan.mysql-shared-server/icon.png",
+  "thumbnail": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/com.leopersan.mysql-shared-server/icon.png",
+  "compose_url": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/com.leopersan.mysql-shared-server/docker-compose.yml",
+  "base_url": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main",
+  "version": "1.0.0",
+  "architectures": [
+    "amd64",
+    "arm64",
+    "arm"
+  ],
+  "min_memory": 0,
+  "min_image_size": {
+    "amd64": 0,
+    "arm64": 0
+  }
+}

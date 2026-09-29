@@ -1,7 +1,7 @@
 {
   "id": "com.leopersan.php-laravel-runner",
   "title": "PHP 8.4 & Laravel Runner",
-  "tagline": "Deploy contínuo e execução otimizada de aplicações PHP 8.4, Laravel, Symfony e WordPress com Composer, Apache e extensões essenciais.",
+  "tagline": "PHP 8.4 & Laravel Runner Runner",
   "description": "O **PHP 8.4 & Laravel Runner** provisiona um ambiente completo com Apache, PHP 8.4 e Composer. Permite configurar o DocumentRoot (como a pasta `public/` para frameworks modernos como Laravel ou a raiz para apps legadas), realiza instalação automática de dependências e gerencia as rotas com suporte a `.htaccess` e proxy Cosmos.",
   "category": "Development",
   "categories": [

@@ -98,4 +98,4 @@ x-casaos:
     pt_br: "Node.js 24 Git Runner"
   category: "Development"
   port_map: "3000"
-  index: /
+  index: "/"
