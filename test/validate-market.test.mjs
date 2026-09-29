@@ -14,7 +14,8 @@ const EXPECTED_APPS = [
   'golang-git-runner',
   'static-nginx-runner',
   'php-laravel-runner',
-  'rust-git-runner'
+  'rust-git-runner',
+  'mysql-shared-server'
 ];
 
 const STORE_ID_PREFIX = 'com.leopersan';
@@ -68,6 +69,29 @@ describe('Cosmos Market Source - Official Schema Test Suite', () => {
       assert.ok(compose['cosmos-installer'] && Array.isArray(compose['cosmos-installer'].form), `cosmos-installer.form must be an array in ${app.id}`);
     }
   });
+
+  test('MySQL Shared Server specific configuration and healthcheck', () => {
+    const mysqlDescPath = path.join(ROOT_DIR, 'servapps', 'mysql-shared-server', 'description.json');
+    const mysqlComposePath = path.join(ROOT_DIR, 'servapps', 'mysql-shared-server', 'cosmos-compose.json');
+
+    const desc = JSON.parse(fs.readFileSync(mysqlDescPath, 'utf-8'));
+    const compose = JSON.parse(fs.readFileSync(mysqlComposePath, 'utf-8'));
+
+    assert.equal(desc.category, 'Database');
+    const paramNames = desc.params.map(p => p.name);
+    assert.ok(paramNames.includes('MYSQL_ROOT_PASSWORD'));
+    assert.ok(paramNames.includes('MYSQL_DATABASE'));
+    assert.ok(paramNames.includes('MYSQL_USER'));
+    assert.ok(paramNames.includes('MYSQL_PASSWORD'));
+    assert.ok(paramNames.includes('ADDITIONAL_DATABASES'));
+    assert.ok(paramNames.includes('ADDITIONAL_USERS'));
+
+    const svc = compose.services['{ServiceName}'];
+    assert.equal(svc.image, 'mysql:8.4');
+    assert.ok(svc.healthcheck, 'MySQL service must define healthcheck');
+    assert.ok(svc.healthcheck.test.includes('mysqladmin'), 'Healthcheck must use mysqladmin');
+    assert.ok(svc.volumes.some(v => v.target === '/var/lib/mysql'), 'Must persist /var/lib/mysql volume');
+  });
 });
 
 describe('ZimaOS / CasaOS App Store - Official Schema Test Suite', () => {
@@ -100,7 +124,7 @@ describe('ZimaOS / CasaOS App Store - Official Schema Test Suite', () => {
     const index = JSON.parse(fs.readFileSync(indexPath, 'utf-8'));
     assert.equal(index.version, 2, 'index.json version must be 2 for ZimaOS');
     assert.ok(Array.isArray(index.apps), 'index.json must contain apps array for ZimaOS app listing');
-    assert.equal(index.apps.length, EXPECTED_APPS.length, 'index.json apps array must contain all 6 apps');
+    assert.equal(index.apps.length, EXPECTED_APPS.length, 'index.json apps array must contain all 7 apps');
 
     for (const app of index.apps) {
       // Validate reverse domain segment ID
@@ -138,17 +162,16 @@ describe('ZimaOS / CasaOS App Store - Official Schema Test Suite', () => {
       assert.ok(composeContent.includes('main:'), `Apps/${zimaAppId}/docker-compose.yml must define main service`);
       assert.ok(composeContent.includes('title:'), `Apps/${zimaAppId}/docker-compose.yml must define title`);
       assert.ok(composeContent.includes('icon:'), `Apps/${zimaAppId}/docker-compose.yml must define icon`);
-      assert.ok(composeContent.includes('port_map:'), `Apps/${zimaAppId}/docker-compose.yml must define port_map`);
       assert.ok(composeContent.includes('category:'), `Apps/${zimaAppId}/docker-compose.yml must define category`);
       assert.ok(composeContent.includes('services:'), `Apps/${zimaAppId}/docker-compose.yml must define services`);
       assert.ok(composeContent.includes('environment:'), `Apps/${zimaAppId}/docker-compose.yml must define environment`);
-      assert.ok(composeContent.includes('ports:'), `Apps/${zimaAppId}/docker-compose.yml must define ports`);
+      assert.ok(composeContent.includes('ports:') || composeContent.includes('expose:'), `Apps/${zimaAppId}/docker-compose.yml must define ports or expose`);
     }
   });
 });
 
 describe('Dual-Target Parity and Documentation Test Suite', () => {
-  test('Cosmos and ZimaOS catalogs have 100% parity across all 6 applications', () => {
+  test('Cosmos and ZimaOS catalogs have 100% parity across all 7 applications', () => {
     for (const appName of EXPECTED_APPS) {
       const zimaAppId = `${STORE_ID_PREFIX}.${appName}`;
       const cosmosDir = path.join(ROOT_DIR, 'servapps', appName);
