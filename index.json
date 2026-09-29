@@ -1,4 +1,136 @@
 {
+  "version": 2,
+  "updated_at": "2026-09-29T21:19:47.676Z",
+  "app_count": 6,
+  "base_url": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main",
+  "apps": [
+    {
+      "id": "golang-git-runner",
+      "title": "Golang 1.24 Git Runner",
+      "tagline": "Compilação e execução automatizada de microserviços e APIs em Golang 1.24 com cache de módulos e proxy Cosmos.",
+      "category": "Development",
+      "categories": [
+        "development"
+      ],
+      "author": "Private Market Admin",
+      "developer": "Private Market Admin",
+      "architectures": [
+        "amd64",
+        "arm64",
+        "arm"
+      ],
+      "icon": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/golang-git-runner/icon.png",
+      "thumbnail": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/golang-git-runner/icon.png",
+      "compose_url": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/golang-git-runner/docker-compose.yml",
+      "meta_url": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/golang-git-runner/meta.json",
+      "version": "1.0.0"
+    },
+    {
+      "id": "nodejs-git-runner",
+      "title": "Node.js 24 Git Runner",
+      "tagline": "Deploy contínuo e execução automatizada de aplicações Node.js 24 / TypeScript / SSR / APIs a partir de repositório Git com persistência em volume e proxy reverso Cosmos.",
+      "category": "Development",
+      "categories": [
+        "development"
+      ],
+      "author": "Private Market Admin",
+      "developer": "Private Market Admin",
+      "architectures": [
+        "amd64",
+        "arm64",
+        "arm"
+      ],
+      "icon": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/nodejs-git-runner/icon.png",
+      "thumbnail": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/nodejs-git-runner/icon.png",
+      "compose_url": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/nodejs-git-runner/docker-compose.yml",
+      "meta_url": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/nodejs-git-runner/meta.json",
+      "version": "1.0.0"
+    },
+    {
+      "id": "php-laravel-runner",
+      "title": "PHP 8.4 & Laravel Runner",
+      "tagline": "Deploy contínuo e execução otimizada de aplicações PHP 8.4, Laravel, Symfony e WordPress com Composer, Apache e extensões essenciais.",
+      "category": "Development",
+      "categories": [
+        "development"
+      ],
+      "author": "Private Market Admin",
+      "developer": "Private Market Admin",
+      "architectures": [
+        "amd64",
+        "arm64",
+        "arm"
+      ],
+      "icon": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/php-laravel-runner/icon.png",
+      "thumbnail": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/php-laravel-runner/icon.png",
+      "compose_url": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/php-laravel-runner/docker-compose.yml",
+      "meta_url": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/php-laravel-runner/meta.json",
+      "version": "1.0.0"
+    },
+    {
+      "id": "python-git-runner",
+      "title": "Python 3.13 Git Runner",
+      "tagline": "Deploy automatizado de aplicações Python 3.13 (FastAPI, Flask, Django, Uvicorn, Gunicorn) com ambiente virtual isolado (.venv), clonagem Git segura e integração com proxy Cosmos.",
+      "category": "Development",
+      "categories": [
+        "development"
+      ],
+      "author": "Private Market Admin",
+      "developer": "Private Market Admin",
+      "architectures": [
+        "amd64",
+        "arm64",
+        "arm"
+      ],
+      "icon": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/python-git-runner/icon.png",
+      "thumbnail": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/python-git-runner/icon.png",
+      "compose_url": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/python-git-runner/docker-compose.yml",
+      "meta_url": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/python-git-runner/meta.json",
+      "version": "1.0.0"
+    },
+    {
+      "id": "rust-git-runner",
+      "title": "Rust Git Runner",
+      "tagline": "Compilação otimizada (`cargo build --release`) e execução de binários web em Rust (Axum, Actix-web, Rocket) com cache de crates Cargo e proxy Cosmos.",
+      "category": "Development",
+      "categories": [
+        "development"
+      ],
+      "author": "Private Market Admin",
+      "developer": "Private Market Admin",
+      "architectures": [
+        "amd64",
+        "arm64",
+        "arm"
+      ],
+      "icon": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/rust-git-runner/icon.png",
+      "thumbnail": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/rust-git-runner/icon.png",
+      "compose_url": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/rust-git-runner/docker-compose.yml",
+      "meta_url": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/rust-git-runner/meta.json",
+      "version": "1.0.0"
+    },
+    {
+      "id": "static-nginx-runner",
+      "title": "Static & SPA Nginx Runner",
+      "tagline": "Deploy automatizado de sites estáticos e SPAs (React, Vue, Vite, Svelte, Astro, Angular) com Nginx de alta performance e roteamento SPA integrado.",
+      "category": "Utilities",
+      "categories": [
+        "utilities"
+      ],
+      "author": "Private Market Admin",
+      "developer": "Private Market Admin",
+      "architectures": [
+        "amd64",
+        "arm64",
+        "arm"
+      ],
+      "icon": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/static-nginx-runner/icon.png",
+      "thumbnail": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/static-nginx-runner/icon.png",
+      "compose_url": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/static-nginx-runner/docker-compose.yml",
+      "meta_url": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/static-nginx-runner/meta.json",
+      "version": "1.0.0"
+    }
+  ],
   "source": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/servapps.json",
   "showcase": [
     {

@@ -1,0 +1,27 @@
+{
+  "id": "php-laravel-runner",
+  "title": "PHP 8.4 & Laravel Runner",
+  "tagline": "Deploy contínuo e execução otimizada de aplicações PHP 8.4, Laravel, Symfony e WordPress com Composer, Apache e extensões essenciais.",
+  "description": "O **PHP 8.4 & Laravel Runner** provisiona um ambiente completo com Apache, PHP 8.4 e Composer. Permite configurar o DocumentRoot (como a pasta `public/` para frameworks modernos como Laravel ou a raiz para apps legadas), realiza instalação automática de dependências e gerencia as rotas com suporte a `.htaccess` e proxy Cosmos.",
+  "category": "Development",
+  "categories": [
+    "development"
+  ],
+  "author": "Private Market Admin",
+  "developer": "Private Market Admin",
+  "icon": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/php-laravel-runner/icon.png",
+  "thumbnail": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/php-laravel-runner/icon.png",
+  "compose_url": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main/Apps/php-laravel-runner/docker-compose.yml",
+  "base_url": "https://raw.githubusercontent.com/LeoPersan/cosmos-custom-marketplace/main",
+  "version": "1.0.0",
+  "architectures": [
+    "amd64",
+    "arm64",
+    "arm"
+  ],
+  "min_memory": 0,
+  "min_image_size": {
+    "amd64": 0,
+    "arm64": 0
+  }
+}

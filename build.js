@@ -20,6 +20,7 @@ const appFolders = fs.readdirSync(servappsDir).filter((file) => {
 });
 
 const servappsList = [];
+const zimaAppsList = [];
 const recommendList = [];
 
 function decodeScript(cmdString) {
@@ -61,26 +62,6 @@ for (const folder of appFolders) {
   };
 
   servappsList.push(servapp);
-
-  // 2. Sync to apps/ folder (Cosmos legacy mirror)
-  const legacyAppDir = path.join(appsDir, folder);
-  if (fs.existsSync(legacyAppDir)) {
-    fs.writeFileSync(path.join(legacyAppDir, 'description.json'), JSON.stringify(desc, null, 2));
-    fs.copyFileSync(cosmosComposePath, path.join(legacyAppDir, 'cosmos-compose.json'));
-    if (fs.existsSync(iconPath)) {
-      fs.copyFileSync(iconPath, path.join(legacyAppDir, 'icon.png'));
-    }
-  }
-
-  // 3. Generate ZimaOS / CasaOS App Structure (Apps/<folder>/)
-  const zimaTargetDir = path.join(zimaAppsDir, folder);
-  if (!fs.existsSync(zimaTargetDir)) {
-    fs.mkdirSync(zimaTargetDir, { recursive: true });
-  }
-
-  if (fs.existsSync(iconPath)) {
-    fs.copyFileSync(iconPath, path.join(zimaTargetDir, 'icon.png'));
-  }
 
   // Extract service details
   const svcConfig = cosmosCompose.services['{ServiceName}'] || {};
@@ -177,11 +158,81 @@ x-casaos:
   index: /
 `;
 
+  const metaJsonContent = {
+    id: folder,
+    title: desc.name || folder,
+    tagline: desc.description || `${desc.name} Runner`,
+    description: desc.long_description || desc.description,
+    category: category,
+    categories: [category.toLowerCase()],
+    author: desc.author || 'Private Market Admin',
+    developer: desc.author || 'Private Market Admin',
+    icon: `${REPO_BASE_URL}/Apps/${folder}/icon.png`,
+    thumbnail: `${REPO_BASE_URL}/Apps/${folder}/icon.png`,
+    compose_url: `${REPO_BASE_URL}/Apps/${folder}/docker-compose.yml`,
+    base_url: REPO_BASE_URL,
+    version: '1.0.0',
+    architectures: desc.supported_architectures || ['amd64', 'arm64', 'arm'],
+    min_memory: 0,
+    min_image_size: {
+      amd64: 0,
+      arm64: 0
+    }
+  };
+
+  // 2. Sync to apps/ folder (Cosmos legacy mirror + lowercase compatibility)
+  const legacyAppDir = path.join(appsDir, folder);
+  if (fs.existsSync(legacyAppDir)) {
+    fs.writeFileSync(path.join(legacyAppDir, 'description.json'), JSON.stringify(desc, null, 2));
+    fs.copyFileSync(cosmosComposePath, path.join(legacyAppDir, 'cosmos-compose.json'));
+    if (fs.existsSync(iconPath)) {
+      fs.copyFileSync(iconPath, path.join(legacyAppDir, 'icon.png'));
+    }
+    fs.writeFileSync(path.join(legacyAppDir, 'docker-compose.yml'), dockerComposeYaml);
+    fs.writeFileSync(path.join(legacyAppDir, 'meta.json'), JSON.stringify(metaJsonContent, null, 2));
+  }
+
+  // 3. Generate ZimaOS / CasaOS App Structure (Apps/<folder>/)
+  const zimaTargetDir = path.join(zimaAppsDir, folder);
+  if (!fs.existsSync(zimaTargetDir)) {
+    fs.mkdirSync(zimaTargetDir, { recursive: true });
+  }
+
+  if (fs.existsSync(iconPath)) {
+    fs.copyFileSync(iconPath, path.join(zimaTargetDir, 'icon.png'));
+  }
+
   fs.writeFileSync(path.join(zimaTargetDir, 'docker-compose.yml'), dockerComposeYaml);
+  fs.writeFileSync(path.join(zimaTargetDir, 'meta.json'), JSON.stringify(metaJsonContent, null, 2));
+
+  // 4. ZimaOS App Item for index.json
+  zimaAppsList.push({
+    id: folder,
+    title: desc.name || folder,
+    tagline: desc.description || `${desc.name} Runner`,
+    category: category,
+    categories: [category.toLowerCase()],
+    author: desc.author || 'Private Market Admin',
+    developer: desc.author || 'Private Market Admin',
+    architectures: desc.supported_architectures || ['amd64', 'arm64', 'arm'],
+    icon: `${REPO_BASE_URL}/Apps/${folder}/icon.png`,
+    thumbnail: `${REPO_BASE_URL}/Apps/${folder}/icon.png`,
+    compose_url: `${REPO_BASE_URL}/Apps/${folder}/docker-compose.yml`,
+    meta_url: `${REPO_BASE_URL}/Apps/${folder}/meta.json`,
+    version: '1.0.0'
+  });
 }
 
-// 4. Cosmos Manifests
+// 5. Unified index.json (Serving both Cosmos and ZimaOS v2 simultaneously)
 const indexContent = {
+  // ZimaOS v2 Store Protocol
+  version: 2,
+  updated_at: new Date().toISOString(),
+  app_count: zimaAppsList.length,
+  base_url: REPO_BASE_URL,
+  apps: zimaAppsList,
+
+  // Cosmos-Server Protocol
   source: `${REPO_BASE_URL}/servapps.json`,
   showcase: servappsList,
   all: servappsList
@@ -190,12 +241,14 @@ const indexContent = {
 fs.writeFileSync(path.join(__dirname, 'servapps.json'), JSON.stringify(servappsList, null, 2));
 fs.writeFileSync(path.join(__dirname, 'index.json'), JSON.stringify(indexContent, null, 2));
 
-// 5. ZimaOS / CasaOS Store Manifests
+// 6. ZimaOS / CasaOS Store Manifests
 const storeContent = {
   version: 2,
   store_id: 'com.leopersan.cosmos-custom-marketplace',
   name: 'Custom Git Runners Store',
-  description: 'Deploy contínuo via Git para Node.js, Python, Golang, PHP, Rust e Nginx SPA no Cosmos-Server e ZimaOS / CasaOS.'
+  description: 'Deploy contínuo via Git para Node.js, Python, Golang, PHP, Rust e Nginx SPA no Cosmos-Server e ZimaOS / CasaOS.',
+  maintainer: 'Private Market Admin',
+  url: 'https://github.com/LeoPersan/cosmos-custom-marketplace'
 };
 
 const categoryListContent = [
@@ -217,4 +270,4 @@ fs.writeFileSync(path.join(__dirname, 'recommend-list.json'), JSON.stringify(rec
 
 console.log(`Successfully compiled dual-target market:`);
 console.log(`- Cosmos-Server: ${servappsList.length} ServApps compiled into servapps.json & index.json`);
-console.log(`- ZimaOS / CasaOS: ${servappsList.length} Apps generated in Apps/ & store.json, category-list.json, recommend-list.json`);
+console.log(`- ZimaOS / CasaOS: ${zimaAppsList.length} Apps compiled into Apps/ + index.json (apps: [${zimaAppsList.length}]) & store.json`);
