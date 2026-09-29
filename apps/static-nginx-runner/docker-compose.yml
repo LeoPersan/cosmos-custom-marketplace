@@ -21,6 +21,7 @@ services:
     command: >
       sh -c '
         apk add --no-cache git bash curl nodejs npm >/dev/null 2>&1 || true
+        git config --global --add safe.directory "*" >/dev/null 2>&1 || true
         cd /app
         GIT_BRANCH="$${GIT_BRANCH:-main}"
         DIST_DIR="$${DIST_DIR:-dist}"

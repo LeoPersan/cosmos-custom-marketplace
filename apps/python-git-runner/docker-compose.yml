@@ -22,6 +22,7 @@ services:
     command: >
       sh -c '
         apt-get update >/dev/null 2>&1 && apt-get install -y --no-install-recommends git curl build-essential >/dev/null 2>&1 || true
+        git config --global --add safe.directory "*" >/dev/null 2>&1 || true
         cd /app
         GIT_BRANCH="$${GIT_BRANCH:-main}"
         START_CMD="$${START_CMD:-/app/.venv/bin/python main.py}"

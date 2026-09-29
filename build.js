@@ -120,8 +120,9 @@ for (const folder of appFolders) {
     .join('\n');
 
   const isDatabase = category === 'Database' || folder.includes('mysql');
-  const volumePath = isDatabase ? '/var/lib/mysql' : '/app';
-  const workingDirBlock = isDatabase ? '' : '    working_dir: /app\n';
+  const isPhp = folder === 'php-laravel-runner';
+  const volumePath = isDatabase ? '/var/lib/mysql' : (isPhp ? '/var/www/html' : '/app');
+  const workingDirBlock = isDatabase ? '' : `    working_dir: ${isPhp ? '/var/www/html' : '/app'}\n`;
   
   const healthcheckBlock = isDatabase ? `    healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p\${MYSQL_ROOT_PASSWORD}"]

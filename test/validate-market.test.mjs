@@ -90,6 +90,35 @@ describe('Cosmos Market Source - Official Schema Test Suite', () => {
     assert.equal(svc.image, 'mysql:8.4');
     assert.ok(svc.volumes.some(v => v.target === '/var/lib/mysql'), 'Must persist /var/lib/mysql volume');
   });
+
+  test('PHP & Laravel Runner includes essential extensions and git safe directory', () => {
+    const phpComposePath = path.join(ROOT_DIR, 'servapps', 'php-laravel-runner', 'cosmos-compose.json');
+    const compose = JSON.parse(fs.readFileSync(phpComposePath, 'utf-8'));
+    const svc = compose.services['{ServiceName}'];
+    
+    // Decode base64 command
+    const parts = svc.command.split('"');
+    const decodedScript = Buffer.from(parts[1], 'base64').toString('utf-8');
+
+    assert.ok(decodedScript.includes('pcntl'), 'PHP runner script must include pcntl extension for Laravel Horizon/Queues');
+    assert.ok(decodedScript.includes('bcmath'), 'PHP runner script must include bcmath extension');
+    assert.ok(decodedScript.includes('exif'), 'PHP runner script must include exif extension for photos/images');
+    assert.ok(decodedScript.includes('intl'), 'PHP runner script must include intl extension');
+    assert.ok(decodedScript.includes('safe.directory'), 'PHP runner script must configure safe.directory');
+    assert.ok(svc.volumes.some(v => v.target === '/var/www/html'), 'PHP runner must persist /var/www/html volume');
+  });
+
+  test('All git runners configure git safe.directory to prevent dubious ownership fatal errors', () => {
+    const gitRunners = ['nodejs-git-runner', 'python-git-runner', 'golang-git-runner', 'static-nginx-runner', 'php-laravel-runner', 'rust-git-runner'];
+    for (const runner of gitRunners) {
+      const composePath = path.join(ROOT_DIR, 'servapps', runner, 'cosmos-compose.json');
+      const compose = JSON.parse(fs.readFileSync(composePath, 'utf-8'));
+      const svc = compose.services['{ServiceName}'];
+      const parts = svc.command.split('"');
+      const decodedScript = Buffer.from(parts[1], 'base64').toString('utf-8');
+      assert.ok(decodedScript.includes('safe.directory'), `${runner} must configure git safe.directory`);
+    }
+  });
 });
 
 describe('ZimaOS / CasaOS App Store - Official Schema Test Suite', () => {
@@ -164,6 +193,10 @@ describe('ZimaOS / CasaOS App Store - Official Schema Test Suite', () => {
       assert.ok(composeContent.includes('services:'), `Apps/${zimaAppId}/docker-compose.yml must define services`);
       assert.ok(composeContent.includes('environment:'), `Apps/${zimaAppId}/docker-compose.yml must define environment`);
       assert.ok(composeContent.includes('ports:') || composeContent.includes('expose:'), `Apps/${zimaAppId}/docker-compose.yml must define ports or expose`);
+      
+      if (appName === 'php-laravel-runner') {
+        assert.ok(composeContent.includes('/var/www/html'), 'PHP Runner Compose must use /var/www/html for volume and working_dir');
+      }
     }
   });
 });

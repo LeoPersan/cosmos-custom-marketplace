@@ -4,7 +4,7 @@ services:
     image: php:8.4-apache
     container_name: php-laravel-runner
     restart: unless-stopped
-    working_dir: /app
+    working_dir: /var/www/html
     environment:
       - GIT_REPOSITORY_URL=
       - GIT_BRANCH=main
@@ -17,12 +17,14 @@ services:
     ports:
       - "80:80"
     volumes:
-      - php_laravel_runner_data:/app
+      - php_laravel_runner_data:/var/www/html
     command: >
       sh -c '
-        apt-get update >/dev/null 2>&1 && apt-get install -y --no-install-recommends git unzip libzip-dev libpng-dev libonig-dev libxml2-dev curl >/dev/null 2>&1 || true
-        docker-php-ext-install pdo pdo_mysql mbstring zip gd >/dev/null 2>&1 || true
+        apt-get update >/dev/null 2>&1 && apt-get install -y --no-install-recommends git unzip libzip-dev libpng-dev libjpeg-dev libfreetype6-dev libicu-dev libonig-dev libxml2-dev curl >/dev/null 2>&1 || true
+        docker-php-ext-configure gd --with-freetype --with-jpeg >/dev/null 2>&1 || true
+        docker-php-ext-install -j$$(nproc) pdo pdo_mysql mbstring zip gd pcntl bcmath exif intl sockets opcache >/dev/null 2>&1 || true
         a2enmod rewrite >/dev/null 2>&1 || true
+        git config --global --add safe.directory "*" >/dev/null 2>&1 || true
         if ! command -v composer >/dev/null 2>&1; then
           curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer >/dev/null 2>&1
         fi
