@@ -5,7 +5,6 @@ RUN apk add --no-cache \
     git \
     bash \
     curl \
-    corepack \
     ca-certificates \
     build-base \
     python3 \
