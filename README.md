@@ -2,21 +2,33 @@
 
 Repositório unificado de receitas e **Git Runners modulares** com suporte simultâneo nativo para **Cosmos-Server (Cosmos Cloud)** e **ZimaOS / CasaOS (IceWhale)**. 
 
-Atua como uma **Market Source** customizada e **Community App Store**, fornecendo ambientes de deploy contínuo para múltiplos runtimes com clonagem Git segura, montagem de volumes persistentes, isolamento de build e suporte a autenticação por Personal Access Token (PAT).
+Atua como uma **Market Source** customizada e **Community App Store**, fornecendo ambientes de deploy contínuo para múltiplos runtimes com clonagem Git segura, montagem de volumes persistentes, isolamento de build, suporte a autenticação por Personal Access Token (PAT) e **imagens pré-construídas no Docker Hub com inicialização instantânea**.
+
+---
+
+## ⚡ Inicialização Rápida & Imagens Pré-Construídas no Docker Hub
+
+Todos os runners utilizam **imagens especializadas pré-compiladas hospedadas no Docker Hub (`leopersan/<runner>:latest`)** com suporte nativo a multi-arquitetura (`linux/amd64` e `linux/arm64`).
+
+### Principais Vantagens:
+- 🚀 **Boot Instantâneo (< 5s)**: Alterar variáveis de ambiente no Cosmos-Server ou ZimaOS reinicia o container em sub-segundos, sem re-executar instalações lentas de sistema operacional (`apt`, `apk`, `pecl`, compilações PHP).
+- 🌐 **Zero Tráfego de SO no Boot**: Todas as ferramentas (`git`, `curl`, `bash`, `composer`, compiladores e extensões) vêm pré-instaladas de fábrica na imagem Docker.
+- 🛡️ **Resiliência Total**: O container inicializa mesmo se espelhos externos de pacotes Linux estiverem temporariamente fora do ar.
+- 🧩 **Entrypoint Nativo Embarcado**: Manifestos Compose limpos e sem comandos complexos ou strings base64.
 
 ---
 
 ## 📦 Catálogo de ServApps & Runners Disponíveis
 
-| Ícone | Runner / ServApp | Runtime / Imagem | Porta Padrão | Stacks & Casos de Uso |
+| Ícone | Runner / ServApp | Imagem Docker Hub | Porta Padrão | Stacks & Casos de Uso |
 | :---: | :--- | :--- | :---: | :--- |
-| ![Node.js](Apps/nodejs-git-runner/icon.png) | **Node.js 24 Git Runner** | `node:24-alpine` | `3000` | APIs, Next.js, Remix, Astro, Express, Fastify, NestJS (`npm`, `yarn`, `pnpm`). |
-| ![Python](Apps/python-git-runner/icon.png) | **Python 3.13 Git Runner** | `python:3.13-slim` | `8000` | FastAPI, Flask, Django, Uvicorn, Gunicorn com ambiente virtual `.venv` persistente. |
-| ![Go](Apps/golang-git-runner/icon.png) | **Golang 1.24 Git Runner** | `golang:1.24-alpine` | `8080` | Microserviços compilados, APIs REST e gRPC com cache de módulos `go mod`. |
-| ![Nginx](Apps/static-nginx-runner/icon.png) | **Static & SPA Nginx Runner** | `nginx:alpine` | `80` | SPAs (React, Vue, Vite, Svelte, Angular) e sites estáticos com roteamento SPA `try_files`. |
-| ![PHP](Apps/php-laravel-runner/icon.png) | **PHP 8.4 & Laravel Runner** | `php:8.4-apache` | `80` | Laravel, Symfony, WordPress, Composer e Apache com suporte a `.htaccess`. |
-| ![Rust](Apps/rust-git-runner/icon.png) | **Rust Git Runner** | `rust:alpine` | `8080` | Actix-web, Axum, Rocket com compilação release otimizada (`cargo build --release`). |
-| ![MySQL](Apps/mysql-shared-server/icon.png) | **MySQL 8.4 Shared Server** | `mysql:8.4` | `3306` | Servidor MySQL 8.4 LTS limpo e otimizado com provisionamento automático de múltiplos bancos e usuários para homelabs. |
+| ![Node.js](Apps/nodejs-git-runner/icon.png) | **Node.js 24 Git Runner** | `leopersan/nodejs-git-runner:latest` | `3000` | APIs, Next.js, Remix, Astro, Express, Fastify, NestJS (`npm`, `yarn`, `pnpm`, Node 24). |
+| ![Python](Apps/python-git-runner/icon.png) | **Python 3.13 Git Runner** | `leopersan/python-git-runner:latest` | `8000` | FastAPI, Flask, Django, Uvicorn, Gunicorn com ambiente virtual `.venv` persistente e `build-essential`. |
+| ![Go](Apps/golang-git-runner/icon.png) | **Golang 1.24 Git Runner** | `leopersan/golang-git-runner:latest` | `8080` | Microserviços compilados, APIs REST e gRPC com cache de módulos `go mod` e `build-base`. |
+| ![Nginx](Apps/static-nginx-runner/icon.png) | **Static & SPA Nginx Runner** | `leopersan/static-nginx-runner:latest` | `80` | SPAs (React, Vue, Vite, Svelte, Angular) e sites estáticos com roteamento SPA `try_files`. |
+| ![PHP](Apps/php-laravel-runner/icon.png) | **PHP 8.4 & Laravel Runner** | `leopersan/php-laravel-runner:latest` | `80` | Laravel 11/12, Symfony, WordPress, Composer e Apache com `pdo_mysql`, `gd`, `intl`, `bcmath`, `pcntl`. |
+| ![Rust](Apps/rust-git-runner/icon.png) | **Rust Git Runner** | `leopersan/rust-git-runner:latest` | `8080` | Actix-web, Axum, Rocket com compilação release otimizada (`cargo build --release`) e `libssl-dev`. |
+| ![MySQL](Apps/mysql-shared-server/icon.png) | **MySQL 8.4 Shared Server** | `mysql:8.4` *(Oficial)* | `3306` | Servidor MySQL 8.4 LTS limpo e otimizado com provisionamento automático de múltiplos bancos e usuários para homelabs. |
 
 ---
 
@@ -119,20 +131,24 @@ Para clonar repositórios privados com segurança:
 
 ---
 
-## 🔄 Ciclo de Vida & Execução Idempotente
+## 🐳 Compilação & Publicação das Imagens Docker
 
-```text
-Host Storage (Volume Persistente)
-  └── /app                 <- Código clonado, virtualenvs e dependências cacheadas
+### Compilação Local com Docker Buildx:
+O repositório inclui um script utilitário para compilar e testar as imagens localmente:
+
+```bash
+# Compilar todas as imagens localmente
+./docker/build-all.sh
+
+# Compilar apenas um runner específico
+./docker/build-all.sh --runner nodejs-git-runner
+
+# Compilar e publicar no Docker Hub (requer docker login)
+./docker/build-all.sh --push
 ```
 
-1. **Primeira Inicialização**:
-   - Se o volume `/app` não contiver `.git`, o runner clona a branch especificada.
-   - Se nenhuma URL for informada, inicializa uma aplicação demo para testes rápidos.
-2. **Reinicializações**:
-   - Executa `git fetch` e `git pull`, garantindo que o container inicie com a versão mais recente sem apagar caches locais.
-3. **Build & Dependências**:
-   - As dependências e módulos de compilação permanecem persistidos no volume.
+### Automação CI/CD no GitHub Actions:
+O workflow [`.github/workflows/docker-publish.yml`](.github/workflows/docker-publish.yml) compila automaticamente todas as imagens em multi-arquitetura (`linux/amd64` e `linux/arm64`) e publica no Docker Hub sob o namespace `leopersan/<runner>` a cada push na branch `main` ou tag de versão `v*`.
 
 ---
 
@@ -140,10 +156,22 @@ Host Storage (Volume Persistente)
 
 ```text
 .
-├── Apps/                                   # Loja ZimaOS / CasaOS (v2 Compose + x-casaos)
+├── .github/
+│   └── workflows/
+│       └── docker-publish.yml              # CI/CD multi-arch para o Docker Hub
+├── docker/                                 # Dockerfiles e Entrypoints dos runners
+│   ├── build-all.sh                        # Script utilitário de compilação multi-arch
 │   ├── nodejs-git-runner/
+│   ├── python-git-runner/
+│   ├── golang-git-runner/
+│   ├── php-laravel-runner/
+│   ├── rust-git-runner/
+│   └── static-nginx-runner/
+├── Apps/                                   # Loja ZimaOS / CasaOS (v2 Compose + x-casaos)
+│   ├── com.leopersan.nodejs-git-runner/
 │   │   ├── docker-compose.yml
-│   │   └── icon.png
+│   │   ├── icon.png
+│   │   └── meta.json
 │   └── ...
 ├── servapps/                               # Fonte Cosmos-Server (JSON recipes)
 │   ├── nodejs-git-runner/
@@ -180,6 +208,7 @@ A suíte de testes verifica:
 - Conformidade dos schemas Cosmos (`index.json`, `servapps.json`, `cosmos-compose.json`).
 - Conformidade dos schemas ZimaOS (`store.json`, `category-list.json`, `docker-compose.yml` com `x-casaos`).
 - Paridade de 100% de todas as 7 aplicações em ambos os ecossistemas.
+- Imagens do Docker Hub (`leopersan/<runner>:latest`), ausência de comandos lentos de boot e integridade dos Dockerfiles/entrypoints.
 - Integridade física de todos os ícones e arquivos referenciados.
 
 ---
