@@ -18,7 +18,71 @@ const EXPECTED_APPS = [
   'mysql-shared-server'
 ];
 
+const GIT_RUNNERS = [
+  'nodejs-git-runner',
+  'python-git-runner',
+  'golang-git-runner',
+  'static-nginx-runner',
+  'php-laravel-runner',
+  'rust-git-runner'
+];
+
 const STORE_ID_PREFIX = 'com.leopersan';
+
+describe('Docker Hub Runner Images and Tooling Architecture', () => {
+  test('All 6 git runners have valid Dockerfiles, executable entrypoints, and safe.directory configured', () => {
+    for (const runner of GIT_RUNNERS) {
+      const runnerDockerDir = path.join(ROOT_DIR, 'docker', runner);
+      const dockerfilePath = path.join(runnerDockerDir, 'Dockerfile');
+      const entrypointPath = path.join(runnerDockerDir, 'entrypoint.sh');
+
+      assert.ok(fs.existsSync(runnerDockerDir), `Missing docker directory for ${runner}`);
+      assert.ok(fs.existsSync(dockerfilePath), `Missing Dockerfile for ${runner}`);
+      assert.ok(fs.existsSync(entrypointPath), `Missing entrypoint.sh for ${runner}`);
+
+      const dockerfileContent = fs.readFileSync(dockerfilePath, 'utf-8');
+      const entrypointContent = fs.readFileSync(entrypointPath, 'utf-8');
+
+      // Verify safe.directory is configured to prevent Git ownership errors
+      const hasSafeDir = dockerfileContent.includes('safe.directory') || entrypointContent.includes('safe.directory');
+      assert.ok(hasSafeDir, `${runner} must configure git safe.directory`);
+
+      // Verify entrypoint is configured in Dockerfile
+      assert.ok(dockerfileContent.includes('ENTRYPOINT'), `${runner} Dockerfile must declare ENTRYPOINT`);
+    }
+  });
+
+  test('PHP & Laravel Runner Dockerfile includes essential extensions, Composer and Apache mod_rewrite', () => {
+    const phpDockerDir = path.join(ROOT_DIR, 'docker', 'php-laravel-runner');
+    const dockerfilePath = path.join(phpDockerDir, 'Dockerfile');
+    const vhostPath = path.join(phpDockerDir, 'apache-vhost.conf');
+
+    assert.ok(fs.existsSync(dockerfilePath), 'PHP runner Dockerfile must exist');
+    assert.ok(fs.existsSync(vhostPath), 'PHP runner apache-vhost.conf must exist');
+
+    const dockerfile = fs.readFileSync(dockerfilePath, 'utf-8');
+    assert.ok(dockerfile.includes('pdo_mysql'), 'PHP Dockerfile must install pdo_mysql extension');
+    assert.ok(dockerfile.includes('pcntl'), 'PHP Dockerfile must install pcntl extension for Laravel Horizon/Queues');
+    assert.ok(dockerfile.includes('bcmath'), 'PHP Dockerfile must install bcmath extension');
+    assert.ok(dockerfile.includes('exif'), 'PHP Dockerfile must install exif extension for photos/images');
+    assert.ok(dockerfile.includes('intl'), 'PHP Dockerfile must install intl extension');
+    assert.ok(dockerfile.includes('gd'), 'PHP Dockerfile must install gd extension');
+    assert.ok(dockerfile.includes('composer'), 'PHP Dockerfile must install Composer');
+    assert.ok(dockerfile.includes('rewrite'), 'PHP Dockerfile must enable Apache rewrite module');
+  });
+
+  test('GitHub Actions CI/CD workflow and local build-all helper exist and are configured', () => {
+    const workflowPath = path.join(ROOT_DIR, '.github', 'workflows', 'docker-publish.yml');
+    const buildAllPath = path.join(ROOT_DIR, 'docker', 'build-all.sh');
+
+    assert.ok(fs.existsSync(workflowPath), '.github/workflows/docker-publish.yml must exist');
+    assert.ok(fs.existsSync(buildAllPath), 'docker/build-all.sh must exist');
+
+    const workflowContent = fs.readFileSync(workflowPath, 'utf-8');
+    assert.ok(workflowContent.includes('leopersan/'), 'Workflow must target leopersan/ namespace');
+    assert.ok(workflowContent.includes('linux/amd64,linux/arm64'), 'Workflow must build multi-arch amd64/arm64');
+  });
+});
 
 describe('Cosmos Market Source - Official Schema Test Suite', () => {
   const indexPath = path.join(ROOT_DIR, 'index.json');
@@ -64,9 +128,17 @@ describe('Cosmos Market Source - Official Schema Test Suite', () => {
       assert.ok(compose.services['{ServiceName}'], `Missing {ServiceName} in ${app.id} compose`);
       
       const service = compose.services['{ServiceName}'];
-      assert.equal(typeof service.command, 'string', `command in ${app.id} must be a string for Cosmos Go unmarshaling`);
       assert.ok(Array.isArray(service.environment), `environment in ${app.id} must be an array for Cosmos React setup form`);
       assert.ok(compose['cosmos-installer'] && Array.isArray(compose['cosmos-installer'].form), `cosmos-installer.form must be an array in ${app.id}`);
+
+      // Check Docker Hub images and absence of slow boot packages
+      if (GIT_RUNNERS.includes(app.id)) {
+        assert.equal(service.image, `leopersan/${app.id}:latest`, `${app.id} must use leopersan/${app.id}:latest image`);
+        if (service.command) {
+          assert.ok(!service.command.includes('apk add'), `${app.id} command must not run apk add at boot`);
+          assert.ok(!service.command.includes('apt-get'), `${app.id} command must not run apt-get at boot`);
+        }
+      }
     }
   });
 
@@ -89,35 +161,6 @@ describe('Cosmos Market Source - Official Schema Test Suite', () => {
     const svc = compose.services['{ServiceName}'];
     assert.equal(svc.image, 'mysql:8.4');
     assert.ok(svc.volumes.some(v => v.target === '/var/lib/mysql'), 'Must persist /var/lib/mysql volume');
-  });
-
-  test('PHP & Laravel Runner includes essential extensions and git safe directory', () => {
-    const phpComposePath = path.join(ROOT_DIR, 'servapps', 'php-laravel-runner', 'cosmos-compose.json');
-    const compose = JSON.parse(fs.readFileSync(phpComposePath, 'utf-8'));
-    const svc = compose.services['{ServiceName}'];
-    
-    // Decode base64 command
-    const parts = svc.command.split('"');
-    const decodedScript = Buffer.from(parts[1], 'base64').toString('utf-8');
-
-    assert.ok(decodedScript.includes('pcntl'), 'PHP runner script must include pcntl extension for Laravel Horizon/Queues');
-    assert.ok(decodedScript.includes('bcmath'), 'PHP runner script must include bcmath extension');
-    assert.ok(decodedScript.includes('exif'), 'PHP runner script must include exif extension for photos/images');
-    assert.ok(decodedScript.includes('intl'), 'PHP runner script must include intl extension');
-    assert.ok(decodedScript.includes('safe.directory'), 'PHP runner script must configure safe.directory');
-    assert.ok(svc.volumes.some(v => v.target === '/var/www/html'), 'PHP runner must persist /var/www/html volume');
-  });
-
-  test('All git runners configure git safe.directory to prevent dubious ownership fatal errors', () => {
-    const gitRunners = ['nodejs-git-runner', 'python-git-runner', 'golang-git-runner', 'static-nginx-runner', 'php-laravel-runner', 'rust-git-runner'];
-    for (const runner of gitRunners) {
-      const composePath = path.join(ROOT_DIR, 'servapps', runner, 'cosmos-compose.json');
-      const compose = JSON.parse(fs.readFileSync(composePath, 'utf-8'));
-      const svc = compose.services['{ServiceName}'];
-      const parts = svc.command.split('"');
-      const decodedScript = Buffer.from(parts[1], 'base64').toString('utf-8');
-      assert.ok(decodedScript.includes('safe.directory'), `${runner} must configure git safe.directory`);
-    }
   });
 });
 
@@ -154,7 +197,6 @@ describe('ZimaOS / CasaOS App Store - Official Schema Test Suite', () => {
     assert.equal(index.apps.length, EXPECTED_APPS.length, 'index.json apps array must contain all 7 apps');
 
     for (const app of index.apps) {
-      // Validate reverse domain segment ID
       assert.ok(app.id.startsWith(STORE_ID_PREFIX + '.'), `App ID must start with ${STORE_ID_PREFIX}: ${app.id}`);
       assert.ok(app.id.split('.').length >= 3, `App ID must have valid reverse-domain segments: ${app.id}`);
       assert.ok(app.title, `Missing title in index.apps for ${app.id}`);
@@ -183,7 +225,6 @@ describe('ZimaOS / CasaOS App Store - Official Schema Test Suite', () => {
 
       const composeContent = fs.readFileSync(composePath, 'utf-8');
       
-      // Verify YAML content has x-casaos block with reverse-domain ID
       assert.ok(composeContent.includes(`id: ${zimaAppId}`), `x-casaos.id must match ${zimaAppId}`);
       assert.ok(composeContent.includes('x-casaos:'), `Apps/${zimaAppId}/docker-compose.yml must contain x-casaos metadata`);
       assert.ok(composeContent.includes('main:'), `Apps/${zimaAppId}/docker-compose.yml must define main service`);
@@ -194,6 +235,10 @@ describe('ZimaOS / CasaOS App Store - Official Schema Test Suite', () => {
       assert.ok(composeContent.includes('environment:'), `Apps/${zimaAppId}/docker-compose.yml must define environment`);
       assert.ok(composeContent.includes('ports:') || composeContent.includes('expose:'), `Apps/${zimaAppId}/docker-compose.yml must define ports or expose`);
       
+      if (GIT_RUNNERS.includes(appName)) {
+        assert.ok(composeContent.includes(`image: leopersan/${appName}:latest`), `ZimaOS compose for ${appName} must use leopersan/${appName}:latest`);
+      }
+
       if (appName === 'php-laravel-runner') {
         assert.ok(composeContent.includes('/var/www/html'), 'PHP Runner Compose must use /var/www/html for volume and working_dir');
       }
@@ -211,7 +256,6 @@ describe('Dual-Target Parity and Documentation Test Suite', () => {
       assert.ok(fs.existsSync(cosmosDir), `Cosmos app missing: ${appName}`);
       assert.ok(fs.existsSync(zimaDir), `ZimaOS app missing: ${zimaAppId}`);
 
-      // Check icons
       const cosmosIconStat = fs.statSync(path.join(cosmosDir, 'icon.png'));
       const zimaIconStat = fs.statSync(path.join(zimaDir, 'icon.png'));
       assert.ok(cosmosIconStat.size > 0, `Cosmos icon must not be empty for ${appName}`);
@@ -224,15 +268,11 @@ describe('Dual-Target Parity and Documentation Test Suite', () => {
     assert.ok(fs.existsSync(readmePath));
     const content = fs.readFileSync(readmePath, 'utf-8');
 
-    // Cosmos guidance
     assert.ok(content.includes('Cosmos-Server') || content.includes('Cosmos Cloud'), 'README must mention Cosmos');
     assert.ok(content.includes('Market') && content.includes('Sources'), 'README must describe Cosmos Market > Sources');
-    
-    // ZimaOS guidance
     assert.ok(content.includes('ZimaOS') || content.includes('CasaOS'), 'README must mention ZimaOS / CasaOS');
     assert.ok(content.includes('store.json') || content.includes('Community Store'), 'README must describe ZimaOS store.json / Community Store');
     
-    // Runner list
     assert.ok(content.includes('Node.js 24'), 'README must list Node.js 24');
     assert.ok(content.includes('Python 3.13'), 'README must list Python 3.13');
     assert.ok(content.includes('Golang 1.24'), 'README must list Golang 1.24');
