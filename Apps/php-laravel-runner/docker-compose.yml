@@ -1,7 +1,7 @@
 name: php-laravel-runner
 services:
   app:
-    image: php:8.4-apache
+    image: leopersan/php-laravel-runner:latest
     container_name: php-laravel-runner
     restart: unless-stopped
     working_dir: /var/www/html
@@ -18,79 +18,6 @@ services:
       - "80:80"
     volumes:
       - php_laravel_runner_data:/var/www/html
-    command: >
-      sh -c '
-        apt-get update >/dev/null 2>&1 && apt-get install -y --no-install-recommends git unzip libzip-dev libpng-dev libjpeg-dev libfreetype6-dev libicu-dev libonig-dev libxml2-dev curl >/dev/null 2>&1 || true
-        docker-php-ext-configure gd --with-freetype --with-jpeg >/dev/null 2>&1 || true
-        docker-php-ext-install -j$$(nproc) pdo pdo_mysql mbstring zip gd pcntl bcmath exif intl sockets opcache >/dev/null 2>&1 || true
-        a2enmod rewrite >/dev/null 2>&1 || true
-        git config --global --add safe.directory "*" >/dev/null 2>&1 || true
-        if ! command -v composer >/dev/null 2>&1; then
-          curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer >/dev/null 2>&1
-        fi
-        cd /var/www/html
-        GIT_BRANCH="$${GIT_BRANCH:-main}"
-        DOCUMENT_ROOT="$${DOCUMENT_ROOT:-public}"
-        
-        if [ -n "$$GIT_REPOSITORY_URL" ]; then
-          AUTH_REPO_URL="$$GIT_REPOSITORY_URL"
-          if [ -n "$$GITHUB_TOKEN" ]; then
-            AUTH_REPO_URL=$$(echo "$$GIT_REPOSITORY_URL" | sed -E "s#https://#https://$${GITHUB_TOKEN}@#")
-          fi
-          if [ ! -d .git ]; then
-            echo "[Runner] Clonando repositório PHP: $$GIT_REPOSITORY_URL (branch: $$GIT_BRANCH)..."
-            git clone --branch "$$GIT_BRANCH" "$$AUTH_REPO_URL" .
-          else
-            echo "[Runner] Atualizando repositório PHP (branch: $$GIT_BRANCH)..."
-            git remote set-url origin "$$AUTH_REPO_URL"
-            git fetch origin "$$GIT_BRANCH"
-            git checkout "$$GIT_BRANCH"
-            git pull origin "$$GIT_BRANCH"
-          fi
-        elif [ ! -f index.php ] && [ ! -f public/index.php ]; then
-          echo '[Runner] Criando index.php demo...'
-          mkdir -p public
-          cat << 'EOF' > public/index.php
-        <?php
-        header('Content-Type: application/json');
-        echo json_encode([
-            'status' => 'online',
-            'runtime' => 'PHP ' . PHP_VERSION,
-            'message' => 'ServApp PHP/Laravel ativo no Cosmos-Server'
-        ]);
-        EOF
-        fi
-        
-        if [ -f composer.json ]; then
-          INSTALL_CMD="$${INSTALL_CMD:-composer install --no-interaction --prefer-dist --optimize-autoloader}"
-          echo "[Runner] Executando: $$INSTALL_CMD"
-          eval "$$INSTALL_CMD"
-        fi
-        
-        if [ -n "$$BUILD_CMD" ]; then
-          echo "[Runner] Executando: $$BUILD_CMD"
-          eval "$$BUILD_CMD"
-        fi
-        
-        TARGET_DOCROOT="/var/www/html"
-        if [ -d "/var/www/html/$$DOCUMENT_ROOT" ]; then
-          TARGET_DOCROOT="/var/www/html/$$DOCUMENT_ROOT"
-        fi
-        
-        sed -ri -e "s!/var/www/html!$$TARGET_DOCROOT!g" /etc/apache2/sites-available/*.conf
-        sed -ri -e "s!/var/www/!$$TARGET_DOCROOT!g" /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
-        cat << 'EOF' > /etc/apache2/conf-available/override.conf
-        <Directory /var/www/html/>
-            Options Indexes FollowSymLinks
-            AllowOverride All
-            Require all granted
-        </Directory>
-        EOF
-        a2enconf override >/dev/null 2>&1 || true
-        chown -R www-data:www-data /var/www/html 2>/dev/null || true
-        echo '[Runner] Iniciando Apache com PHP 8.4...'
-        exec apache2-foreground
-      '
 
 volumes:
   php_laravel_runner_data:

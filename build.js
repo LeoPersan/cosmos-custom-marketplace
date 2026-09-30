@@ -140,6 +140,13 @@ for (const folder of appFolders) {
     ? desc.description
     : `${(desc.name || folder)} Runner`;
 
+  const commandBlock = formattedScript
+    ? `    command: >
+      sh -c '
+${indentedScript}
+      '\n`
+    : '';
+
   const dockerComposeYaml = `name: ${folder}
 services:
   app:
@@ -151,11 +158,7 @@ ${envYamlLines}
 ${portsBlock}
     volumes:
       - ${folder.replace(/-/g, '_')}_data:${volumePath}
-${healthcheckBlock}    command: >
-      sh -c '
-${indentedScript}
-      '
-
+${healthcheckBlock}${commandBlock}
 volumes:
   ${folder.replace(/-/g, '_')}_data:
 
